@@ -38,7 +38,7 @@ string/resource类型只能位于host mem中。
 - IteratorContext: 位于dataset.h。包含很多组件。
 
 - IteratorBase：位于dataset.h。有纯虚函数GetNext。
-含有一个shared\_ptr<model::Node>。
+含有一个shared\_ptr\<model::Node\>。
 
 - DatasetContext: 位于dataset.h。
 
