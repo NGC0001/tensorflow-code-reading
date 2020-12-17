@@ -32,8 +32,8 @@ Variant类的目的是让被封装的对象可以装入DT\_VARIANT类型的Tenso
 
 ---
 
-- IteratorContext: 位于dataset.h。是一个缩减版的OpKernelContext。
-包含很多组件<需要进一步了解这些组件>。
+- [] IteratorContext: 位于dataset.h。是一个缩减版的OpKernelContext。
+包含很多组件。
 
 - IteratorBase：位于dataset.h。有纯虚函数GetNext。
 含有一个shared\_ptr\<model::Node\>。
