@@ -1,4 +1,4 @@
-下面的类/文件等位于tensorflow/core/framework目录。
+下面的C++类/文件等位于tensorflow/core/framework目录。
 
 ---
 
@@ -34,4 +34,15 @@
 - types.h/types.cc：定义了Tensor中数据的类型的一些表示和操作。
 有三个比较特殊的类型DT\_STRING/DT\_VARIANT/DT\_RESOURCE，其它为数值类型。
 string/resource类型只能位于host mem中。
+
+- Variant: 位于variant.h。
+是一个type-erased container，用于封装满足特定条件的任意类型。
+Variant类的对象可以装入DT\_VARIANT类型的Tensor。
+可以使用Variant::get\<T\>获得被封装对象的指针。
+
+- ResourceHandle: 位于resource\_handle.h。
+该类的对象可以放入DT\_RESOURCE类型的Tensor。
+包含有device\_。
+使用std::string类型的对象container\_放置resource。
+含有resource的数据类型和形状。
 

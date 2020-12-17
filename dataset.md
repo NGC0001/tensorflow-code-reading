@@ -1,11 +1,4 @@
-下面的类/文件等位于tensorflow/core/framework目录。
-
----
-
-- Variant: 位于variant.h。
-是一个type-erased container，用于封装满足特定条件的类型。
-Variant类的目的是让被封装的对象可以装入DT\_VARIANT类型的Tensor。
-可以使用Variant::get\<T\>获得被封装对象的指针。
+下面的C++类/文件等位于tensorflow/core/framework目录。
 
 ---
 
@@ -29,10 +22,6 @@ Variant类的目的是让被封装的对象可以装入DT\_VARIANT类型的Tenso
 - DatasetOpKernel: 位于dataset.h。继承自OpKernel。
 有final方法Compute，有纯虚函数MakeDataset。
 该类针对不同Dataset类型派生不同的子类。
-
----
-
-- ResourceHandle: 位于resource\_handle.h。
 
 ---
 
