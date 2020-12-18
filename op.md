@@ -27,7 +27,7 @@
 利用OpDefBuilderWrapper类和其他一些操作来构建op并注册到OpRegestry::Global()中。
 
 - OpDefBuilderWrapper: 位于op.h。
-是对OpDefBuilder类的封装，方便用户使用OpDefBuilder。
+是对OpDefBuilder类的封装，方便REGISTER\_OP使用OpDefBuilder。
 
 ---
 
@@ -50,3 +50,48 @@ AsyncOpKernel的Compute函数会调用ComputeAsync，
 含有一个OpKernel对象实例化时所需的信息，
 如device/allocator/function library/resource manager/node properties等。
 有方法allocate\_temp/allocate\_persistent用于OpKernel自身创建临时/持久的tensor。
+
+- OpKernelContext: 位于op\_kernel.h。
+是OpKernel执行Compute时的参数，
+为OpKernel的计算提供input及上下文信息，并接受计算出的output。
+含有step/device/resource manager/rendezvous/
+collective executor/call frame/control flow/
+session/cancellation manager/input/function library等等。
+有一系列方法帮助OpKernel分配mem/设置output等。
+
+---
+
+---
+
+- KernelDef: 位于kernel\_def.proto。
+
+- KernelDefBuilder:
+
+---
+
+- KernelRegistration: 位于op\_kernel.cc。
+包含kernel的KernelDef、kernel\_class\_name、
+实例化该OpKernel的函数(该函数被封装到OpKernelFactory类)。
+
+- KernelRegistry: 位于op\_kernel.cc。
+该类的一个全局对象用于注册kernel的KernelRegistration。
+
+- REGISTER\_KERNEL\_BUILDER: 位于op\_kernel.h。macro。
+构建将OpKernel实例化的函数，用Name类来构建KernelDef，
+并使用OpKernelRegistrar类将OpKernel注册到一个全局的KernelRegistry对象中。
+
+- Name: 位于op\_kernel.h。
+该类封装KernelDefBuilder类，是REGISTER\_KERNEL\_BUILDER的辅助类。
+
+- CreateOpKernel: 位于op\_kernel.h。
+该函数根据device/node等信息从KernelRegistry中寻找合适的KernelRegistration。
+找到后，创建OpKernelConstruction对象。
+随后，调用KernelRegistration中的实例化函数，创建OpKernel对象。
+
+---
+
+---
+
+<todo:>The relationship between kernel/op/graph/node/function.
+And how the graph built/placed.
+And how the computation happens.

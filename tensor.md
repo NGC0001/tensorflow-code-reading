@@ -3,9 +3,13 @@
 ---
 
 - TensorBuffer: 位于tensor.h。保有mem指针。
-继承了引用计数类RefCounted，使其可以在引用数为0时析构自身。
-有不同子类，比如针对某些host mem上的Scalar类型的Tensor作了优化，此时buffer在栈上。
+继承了引用计数类RefCounted，使其可以在引用数为0时delete自身。
 有子类SubBuffer，该子类不实际拥有指针所指向的mem。
+
+- HostScalarTensorBuffer: 位于tensor.cc。
+派生关系为TensorBuffer-\>HostScalarTensorBufferBase-\>HostScalarTensorBuffer。
+针对某些host mem上的scalar类型的Tensor作了优化，buffer在栈上。
+该类的operator delete被重写。
 
 - Buffer: 位于tensor.cc。
 派生关系为TensorBuffer-\>BufferBase-\>Buffer。
