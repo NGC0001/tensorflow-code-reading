@@ -64,8 +64,10 @@ session/cancellation manager/input/function library等等。
 ---
 
 - KernelDef: 位于kernel\_def.proto。
+含有op name/device type/attribute constraints/host mem args/priority等。
 
-- KernelDefBuilder:
+- KernelDefBuilder: 位于kernel\_def\_builder.h。
+用于构建出一个KernelDef。
 
 ---
 
