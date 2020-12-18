@@ -19,9 +19,16 @@
 
 ---
 
-- TensorShape: 位于tensor\_shape.h。
+- TensorShapeRep: 位于tensor\_shape.h。
+有子模板类TensorShapeBase。
+是TensorShape和PartialTensorShape的内部表示。
 
-- PartialTensorShape: 部分维数未知的TensorShape。
+- TensorShape: 位于tensor\_shape.h。
+派生自TensorShapeBase\<TensorShape\>。
+
+- PartialTensorShape: 位于tensor\_shape.h。
+部分维数未知的TensorShape。
+派生自TensorShapeBase\<PartialTensorShape\>。
 
 ---
 

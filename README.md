@@ -15,10 +15,11 @@ And how the computation happens.
 And how an iterator is generated.
 And how to get from an iterator.
 
-- [ ] resource manager,
-device manager,
-cancellation manager,
-function and function library,
-node and graph,
-placer,
-rendezvous.
+- [ ] resource handle
+- [ ] resource manager
+- [ ] device manager
+- [ ] cancellation manager
+- [ ] function and function library
+- [ ] node and graph
+- [ ] placer
+- [ ] rendezvous
