@@ -2,14 +2,51 @@
 
 ---
 
-- OpRegistryInterface: 位于op.h。
-定义有纯虚函数LookUp，根据op\_type\_name查找op\_registration\_data。
+- OpDef: 位于op\_def.proto。
+记录一个op的name/input/output/optimizationConstraints等。
 
-- OpRegistry: 位于op.h。继承OpRegistryInterface。
-可以注册op的op\_registration\_data。
-其Global静态函数提供了一个singleton。
+- InferenceContext: 位于shape\_inference.h。
+该类配合op的shape inference function来完成op的output的shape的自动推断。
+
+- OpRegistrationData: 位于op\_def\_builder.h。
+包含了op的OpDef、shape\_inference\_fn等。
+
+- OpDefBuilder: 位于op\_def\_builder.h。
+用于构建出一个OpRegistrationData。
 
 ---
 
-- REGISTER\_OP: 位于op.h。
-macro，利用OpDefBuilderWrapper类把op注册到OpRegestry::Global()中。
+- OpRegistryInterface: 位于op.h。
+定义有纯虚函数LookUp，根据op\_type\_name查找OpRegistrationData。
+
+- OpRegistry: 位于op.h。继承OpRegistryInterface。
+可以注册op的OpRegistrationData。
+其Global静态函数提供了一个singleton。
+
+- REGISTER\_OP: 位于op.h。macro。
+利用OpDefBuilderWrapper类和其他一些操作来构建op并注册到OpRegestry::Global()中。
+
+- OpDefBuilderWrapper: 位于op.h。
+是对OpDefBuilder类的封装，方便用户使用OpDefBuilder。
+
+---
+
+---
+
+- OpKernel: 位于op\_kernel.h。
+其构造函数接受一个OpKernelConstruction对象。
+有thread-safe纯虚函数Compute，该函数执行kernel的计算工作，
+它仅接受一个OpKernelContext对象作为参数，
+OpKernelContext提供了Compute所需的输入，
+Compute的计算结果也写入OpKernelContext中。
+OpKernel包含有NodeProperties。
+
+- AsyncOpKernel: 位于op\_kernel.h。继承自OpKernel。
+有纯虚函数ComputeAsync，该函数接受一个OpKernelContext对象和一个回调函数。
+AsyncOpKernel的Compute函数会调用ComputeAsync，
+并使用了Notification对象创建ComputeAsync的回调函数。
+
+- OpKernelConstruction: 位于op\_kernel.h。
+含有一个OpKernel对象实例化时所需的信息，
+如device/allocator/function library/resource manager/node properties等。
+有方法allocate\_temp/allocate\_persistent用于OpKernel自身创建临时/持久的tensor。

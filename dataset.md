@@ -16,8 +16,9 @@
 
 - WrappedDatasetVariantWrapper/WrapDatasetVariantOp/UnwrapDatasetVariantOp:
 位于dataset.cc。
-可以把一个tensor封装为一个variant后，放入一个类型为variant形状为scalar的tensor，
-也可以进行反向操作。
+WrapDatasetVariantOp把一个tensor封装为一个variant后，
+放入一个variant类型scalar形状的tensor，
+UnwrapDatasetVariantOp则进行反向操作。
 
 - DatasetOpKernel: 位于dataset.h。继承自OpKernel。
 有final方法Compute，有纯虚函数MakeDataset。
@@ -25,8 +26,8 @@
 
 ---
 
-- <ToDo:Check_Its_Components> IteratorContext: 位于dataset.h。是一个缩减版的OpKernelContext。
-包含很多组件。
+- <ToDo:Check_Its_Components> IteratorContext: 位于dataset.h。
+是一个缩减版的OpKernelContext，包含很多组件。
 
 - IteratorBase：位于dataset.h。有纯虚函数GetNext。
 含有一个shared\_ptr\<model::Node\>。

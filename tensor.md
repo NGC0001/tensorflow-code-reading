@@ -31,8 +31,10 @@
 
 ---
 
-- types.h/types.cc：定义了Tensor中数据的类型的一些表示和操作。
-有三个比较特殊的类型DT\_STRING/DT\_VARIANT/DT\_RESOURCE，其它为数值类型。
+- DataType: 位于types.proto。定义了Tensor中各数据类型。
+比较特殊的类型有DT\_INVALID/DT\_STRING/DT\_VARIANT/DT\_RESOURCE。
+
+- types.h/types.cc：定义了数据类型的一些表示和操作。
 string/resource类型只能位于host mem中。
 
 - Variant: 位于variant.h。
