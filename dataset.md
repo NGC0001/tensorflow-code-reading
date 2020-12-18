@@ -26,8 +26,8 @@ UnwrapDatasetVariantOp则进行反向操作。
 
 ---
 
-- <ToDo:Check_Its_Components> IteratorContext: 位于dataset.h。
-是一个缩减版的OpKernelContext，包含很多组件。
+- IteratorContext: 位于dataset.h。是一个缩减版的OpKernelContext。
+DatasetBase::MakeIterator和IteratorBase::GetNext都有该类作为参数。
 
 - IteratorBase：位于dataset.h。有纯虚函数GetNext。
 含有一个shared\_ptr\<model::Node\>。

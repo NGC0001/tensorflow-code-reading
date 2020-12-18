@@ -90,10 +90,3 @@ session/cancellation manager/input/function library等等。
 找到后，创建OpKernelConstruction对象。
 随后，调用KernelRegistration中的实例化函数，创建OpKernel对象。
 
----
-
----
-
-<todo:>The relationship between kernel/op/graph/node/function.
-And how the graph built/placed.
-And how the computation happens.
