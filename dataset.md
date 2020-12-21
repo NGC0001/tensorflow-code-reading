@@ -50,7 +50,7 @@ bool\* end\_of\_sequence。
 - dataset\_ops.cc/experimental\_dataset\_ops.cc:
 包含了与Dataset/Iterator相关的算子的注册(REGISTER\_OP)。
 
-### tensorflow/core/kernels/data目录中与dataset相关的OpKernel。
+### tensorflow/core/kernels/data目录中几个DatasetOpKernel示例。
 
 - TensorDatasetOp: 位于tensor\_dataset\_op.h。继承自DatasetOpKernel。
 有继承自DatasetBase的private嵌套类TensorDatasetOp::Dataset。
@@ -106,15 +106,33 @@ output\_shapes/output\_types/func\_metadata等。
 并利用该对象和其他一些信息构造一个MapDatasetOp::Dataset。
 
 - MapDatasetOp::Dataset: 位于map\_dataset\_op.cc。
+保存有一个CapturedFunction对象。
 
 - MapDatasetOp::Dataset::Iterator: 位于map\_dataset\_op.cc。
 该类的Initialize函数会保存上游Iterator，
 同时该函数会把MapDatasetOp::Dataset中的CapturedFunction对象
 实例化为一个InstantiatedCapturedFunction对象。
-该类的GetNextInternal会从上游iterator获取tensors，
+该类的GetNextInternal函数会从上游iterator获取tensors，
 然后调用instantiated\_captured\_func，得到最终结果。
 
 ---
+
+- InterleaveDatasetOp: 位于interleave\_dataset\_op.h。
+继承自UnaryDatasetOpKernel。
+
+- InterleaveDatasetOp::Dataset: 位于interleave\_dataset\_op.cc。
+保存有一个CapturedFunction对象。
+
+- InterleaveDatasetOp::Dataset::Iterator: 位于interleave\_dataset\_op.cc。
+该类保存有一个InstantiatedCapturedFunction对象、
+上游Iterator、一个IteratorBase列表。
+该类的GetNextInternal函数从上游iterator获取元素，
+再调用instantiated\_captured\_func
+从所获元素(得到dataset,再从所得dataset)得到iterator，
+所得iterator被放入IteratorBase列表中，
+GetNextInternal函数会轮流对这些iterator调用iterator.GetNext，返回所得结果。
+
+### tensorflow中dataset的工作模式。
 
 // comments in tensorflow/core/ops/dataset_ops.cc:
 //
