@@ -1,4 +1,4 @@
-下面的C++类/文件等位于tensorflow/core/framework目录。
+### 下面的C++类/文件等位于tensorflow/core/framework目录。
 
 ---
 
@@ -54,7 +54,7 @@ AsyncOpKernel的Compute函数会调用ComputeAsync，
 - OpKernelContext: 位于op\_kernel.h。
 是OpKernel执行Compute时的参数，
 为OpKernel的计算提供input及上下文信息，并接受计算出的output。
-含有step/device/resource manager/rendezvous/
+含有step/device/allocator/resource manager/rendezvous/
 collective executor/call frame/control flow/
 session/cancellation manager/input/function library等等。
 有一系列方法帮助OpKernel分配mem/设置output等。
