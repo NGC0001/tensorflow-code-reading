@@ -1,7 +1,5 @@
 ### 下面的C++类/文件等位于tensorflow/core/framework目录。
 
----
-
 - OpDef: 位于op\_def.proto。
 记录一个op的name/input/output/optimizationConstraints等。
 

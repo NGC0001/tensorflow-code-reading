@@ -1,7 +1,5 @@
 ### 下面的C++类/文件等位于tensorflow/core/framework目录。
 
----
-
 - DatasetContext: 位于dataset.h。是DatasetBase的构造参数。
 DatasetContext的构造方法之一通过OpKernelContext构造而来。
 
@@ -49,14 +47,10 @@ bool\* end\_of\_sequence。
 
 ### tensorflow/core/ops目录中与dataset相关的Op。
 
----
-
 - dataset\_ops.cc/experimental\_dataset\_ops.cc:
 包含了与Dataset/Iterator相关的算子的注册(REGISTER\_OP)。
 
 ### tensorflow/core/kernels/data目录中与dataset相关的OpKernel。
-
----
 
 - TensorDatasetOp: 位于tensor\_dataset\_op.h。继承自DatasetOpKernel。
 有继承自DatasetBase的private嵌套类TensorDatasetOp::Dataset。
@@ -75,6 +69,19 @@ TensorDatasetOp::Dataset有函数MakeIteratorInternal，
 
 ---
 
+- TFRecordDatasetOp: 位于tf\_record\_dataset\_op.h。继承自DatasetOpKernel。
+该类的函数MakeDataset构造一个TFRecordDatasetOp::Dataset对象。
+
+- TFRecordDatasetOp::Dataset: 位于tf\_record\_dataset\_op.cc。
+存有一个文件名列表。
+
+- TFRecordDatasetOp::Dataset::Iterator: 位于tf\_record\_dataset\_op.cc。
+该类保存有一个RandomAccessFile类型的文件handle，
+和一个io::SequentialRecordReader类型的reader。
+该类的GetNextInternal函数会用reader从文件中读取一条内容(string类型)作为结果。
+
+---
+
 - BatchDatasetOp: 位于batch\_dataset\_op.h。
 继承自UnaryDatasetOpKernel。
 该类的函数MakeDataset接受一个OpKernelContext对象和
@@ -88,6 +95,24 @@ TensorDatasetOp::Dataset有函数MakeIteratorInternal，
 - BatchDatasetOp::Dataset::Iterator: 位于batch\_dataset\_op.cc。
 该类的Initialize函数会保存上游DatasetBase的Iterator。
 该类的GetNextInternal函数会从上游Iterator对象中获取一定数量的结果。
+
+---
+
+- MapDatasetOp: 位于map\_dataset\_op.h。继承自UnaryDatasetOpKernel。
+该类在构造时，会从构造参数OpKernelConstruction对象中获取一些信息，
+比如即将创建的MapDatasetOp::Dataset对象的
+output\_shapes/output\_types/func\_metadata等。
+该类的MakeDataset函数会创建CapturedFunction对象，
+并利用该对象和其他一些信息构造一个MapDatasetOp::Dataset。
+
+- MapDatasetOp::Dataset: 位于map\_dataset\_op.cc。
+
+- MapDatasetOp::Dataset::Iterator: 位于map\_dataset\_op.cc。
+该类的Initialize函数会保存上游Iterator，
+同时该函数会把MapDatasetOp::Dataset中的CapturedFunction对象
+实例化为一个InstantiatedCapturedFunction对象。
+该类的GetNextInternal会从上游iterator获取tensors，
+然后调用instantiated\_captured\_func，得到最终结果。
 
 ---
 
