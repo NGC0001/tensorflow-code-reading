@@ -53,7 +53,10 @@ Variant类的对象可以装入DT\_VARIANT类型的Tensor。
 
 - ResourceHandle: 位于resource\_handle.h。
 该类的对象可以放入DT\_RESOURCE类型的Tensor。
-包含有device\_。
-使用std::string类型的对象container\_放置resource。
-含有resource的数据类型和形状。
+包含有device/container/name/dtypes\_and\_shapes等信息，
+通过这些信息可以检索到相应resource。
+
+### 关于Tensor
+
+- 在tensorflow中，很多被操作的对象都尽可能被直接/间接地装入tensor中。
 

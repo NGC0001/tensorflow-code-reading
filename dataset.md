@@ -12,7 +12,7 @@ DatasetContext的构造方法之一通过OpKernelContext构造而来。
 
 - DatasetVariantWrapper: 位于dataset.cc。
 包含有DatasetBase指针，并对DatasetBase进行引用计数。
-该类可以封装入一个Variant，从而完成对DatasetBase的variant封装。
+该类可以封装入一个Variant，从而使得DatasetBase能封装入variant。
 
 - WrappedDatasetVariantWrapper/WrapDatasetVariantOp/UnwrapDatasetVariantOp:
 位于dataset.cc。
@@ -133,6 +133,12 @@ output\_shapes/output\_types/func\_metadata等。
 GetNextInternal函数会轮流对这些iterator调用iterator.GetNext，返回所得结果。
 
 ### tensorflow中dataset的工作模式。
+
+- tensorflow中，所有派生自DatasetBase的类只表示某个dataset的类型、
+该dataset的元素(Tensor)的类型、该dataset的元素的形状、该dataset的必要信息等，
+真正能从dataset中"看到"一个个元素的，是派生自DatasetBaseIterator的iterator。
+iterator会一次次迭代出元素，dataset不参与迭代。
+在元素的各次迭代之间，iterator是有状态的，dataset是无状态的。
 
 // comments in tensorflow/core/ops/dataset_ops.cc:
 //
