@@ -1,4 +1,4 @@
-### 下面的C++类/文件等位于tensorflow/core/framework目录。
+### tensorflow/core/framework目录中与tensor/types相关的类。
 
 - TensorBuffer: 位于tensor.h。保存有mem指针。
 继承了引用计数类RefCounted，使其可以在引用数为0时delete自身。

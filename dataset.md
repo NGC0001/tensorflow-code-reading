@@ -1,4 +1,4 @@
-### 下面的C++类/文件等位于tensorflow/core/framework目录。
+### tensorflow/core/framework目录中对dataset/iterator相关接口的定义。
 
 - DatasetContext: 位于dataset.h。是DatasetBase的构造参数。
 DatasetContext的构造方法之一通过OpKernelContext构造而来。
@@ -45,12 +45,12 @@ bool\* end\_of\_sequence。
 - DatasetIterator: 位于dataset.h。继承自DatasetIteratorBase。
 表示一个与具体类型的dataset绑定的iterator。
 
-### tensorflow/core/ops目录中与dataset相关的Op。
+### tensorflow/core/ops目录中与dataset相关的一些Op的注册。
 
 - dataset\_ops.cc/experimental\_dataset\_ops.cc:
 包含了与Dataset/Iterator相关的算子的注册(REGISTER\_OP)。
 
-### tensorflow/core/kernels/data目录中几个DatasetOpKernel示例。
+### tensorflow/core/kernels/data目录中几个DatasetOpKernel的具体实现。
 
 - TensorDatasetOp: 位于tensor\_dataset\_op.h。继承自DatasetOpKernel。
 有继承自DatasetBase的private嵌套类TensorDatasetOp::Dataset。

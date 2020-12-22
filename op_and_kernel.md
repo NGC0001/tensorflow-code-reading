@@ -1,4 +1,4 @@
-### 下面的C++类/文件等位于tensorflow/core/framework目录。
+### tensorflow/core/framework目录中对op/kernel相关接口的定义。
 
 - OpDef: 位于op\_def.proto。
 记录一个op的name/input/output/optimizationConstraints等。
