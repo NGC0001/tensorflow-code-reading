@@ -12,6 +12,7 @@ How arguments are passed.
 - [ ] kernel/op/graph/node/function.
 how the graph built/placed.
 
+- [ ] async op
 - [ ] device manager
 - [ ] cancellation manager
 - [ ] function and function library
