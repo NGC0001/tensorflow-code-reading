@@ -6,27 +6,19 @@ Tensorflow源码阅读笔记。
 
 ## To Do List:
 
-- [ ] How op/kernel works from python layer to c++ layer.
+- [ ] How op/kernel works in python/c++.
 How arguments are passed.
 
-- [ ] The relationship between kernel/op/graph/node/function.
-And how the graph built/placed.
-And how the computation happens.
+- [ ] kernel/op/graph/node/function.
+how the graph built/placed.
 
-- [ ] What a dataset is and what an iterator is.
-And how an iterator is generated.
-And how to get from an iterator.
-
-- [ ] resource handle
-- [ ] resource manager
 - [ ] device manager
 - [ ] cancellation manager
 - [ ] function and function library
-- [ ] node and graph
 - [ ] placer
 - [ ] rendezvous
 - [ ] grappler
-- [ ] xla/jit
+- [ ] xla/compiler
 
 ## Notes:
 
