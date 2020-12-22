@@ -1,5 +1,10 @@
 ### tensorflow/core/framework目录中对op/kernel相关接口的定义。
 
+- 算子在tensorflow中包含两部分，
+面向图的接口定义Op，和执行计算过程的具体实现OpKernel。
+
+---
+
 - OpDef: 位于op\_def.proto。
 记录一个op的name/input/output/optimizationConstraints等。
 
@@ -29,8 +34,6 @@
 
 ---
 
----
-
 - OpKernel: 位于op\_kernel.h。
 其构造函数接受一个OpKernelConstruction对象。
 有thread-safe纯虚函数Compute，该函数执行kernel的计算工作，
@@ -56,8 +59,6 @@ AsyncOpKernel的Compute函数会调用ComputeAsync，
 collective executor/call frame/control flow/
 session/cancellation manager/input/function library等等。
 有一系列方法帮助OpKernel分配mem/设置output等。
-
----
 
 ---
 

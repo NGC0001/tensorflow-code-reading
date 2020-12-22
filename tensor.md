@@ -53,8 +53,9 @@ Variant类的对象可以装入DT\_VARIANT类型的Tensor。
 
 - ResourceHandle: 位于resource\_handle.h。
 该类的对象可以放入DT\_RESOURCE类型的Tensor。
+ResourceHandle是指向resource manager中某个resource的句柄。
 包含有device/container/name/dtypes\_and\_shapes等信息，
-通过这些信息可以检索到相应resource。
+通过这些信息可以从resource manager中检索到相应的resource。
 
 ### 关于Tensor
 
