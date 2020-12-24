@@ -201,7 +201,7 @@ iterator会一次次迭代出元素，dataset不参与迭代。
 某种类型的dataset可以是从其他dataset构建而来，
 这样就可以建立一条dataset链，下游的dataset有上游dataset的指针，
 下游dataset的iterator也会调用上游dataset的iterator。
-反映在Python代码上，就是input pipeline:
+反映在Python代码上，就是input pipeline，比如:
 dataset.interleave(...).map(...).batch(...).prefetch(...)。
 
 - 在python中构建input pipeline时，对应的C++代码是创建了一条DatasetBase链。
@@ -220,3 +220,10 @@ dataset.interleave(...).map(...).batch(...).prefetch(...)。
 
 - 在python中对iterator进行迭代时，C++代码调用的是IteratorGetNext算子。
 
+- 在tensorflow的python代码中，对dataset和iterator进行抽象的类分别位于
+tensorflow/python/data/ops/dataset\_ops.py和
+tensorflow/python/data/ops/iterator\_ops.py。
+这两个文件中的代码最终会依赖于相应的C++算子来实现其功能，
+而这些dataset/iterator相关的C++算子的调用接口则位于
+tensorflow/python/ops/gen\_dataset\_ops.py，
+因此dataset\_ops.py和iterator\_ops.py会大量调用gen\_dataset\_ops.py。
