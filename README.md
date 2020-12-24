@@ -1,8 +1,12 @@
 ## Tensorflow Development Wiki
 
-Tensorflow源码阅读笔记。
+- Tensorflow源码阅读笔记。
 目标是了解Tensorflow的架构，及其比较重要的功能模块。
 可能包含错误和表述不清的地方。
+
+- 当前代码版本的时间节点是:
+Pre-Release TensorFlow 2.4.0-rc4 已经发布。
+Release TensorFlow 2.4.0 即将发布。
 
 ## To Do List:
 
