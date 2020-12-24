@@ -10,19 +10,18 @@ Release TensorFlow 2.4.0 即将发布。
 
 ## To Do List:
 
-- [ ] How op/kernel works in python/c++.
-How arguments are passed.
-
-- [ ] kernel/op/graph/node/function.
-how the graph built/placed.
-
-- [ ] async op
-- [ ] device manager
-- [ ] cancellation manager
 - [ ] function and function library
+- [ ] kernel/op/graph/node/function.
+how a graph built/placed/runned.
+
+- [ ] the interface between python and c++ in tensorflow.
+
+- [ ] device manager
 - [ ] placer
-- [ ] rendezvous
 - [ ] eager
+- [ ] async op
+- [ ] cancellation manager
+- [ ] rendezvous
 - [ ] grappler
 - [ ] xla/compiler
 - [ ] stream-executor
