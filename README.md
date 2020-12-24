@@ -18,8 +18,10 @@ how the graph built/placed.
 - [ ] function and function library
 - [ ] placer
 - [ ] rendezvous
+- [ ] eager
 - [ ] grappler
 - [ ] xla/compiler
+- [ ] stream-executor
 
 ## Notes:
 

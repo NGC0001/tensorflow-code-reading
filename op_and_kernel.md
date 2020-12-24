@@ -6,7 +6,7 @@
 ---
 
 - OpDef: 位于op\_def.proto。
-记录一个op的name/input/output/optimizationConstraints等。
+记录一个op的name/input/output/attr/optimizationConstraints等。
 
 - InferenceContext: 位于shape\_inference.h。
 该类配合op的shape inference function来完成op的output的shape的自动推断。
