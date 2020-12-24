@@ -202,7 +202,12 @@ iterator会一次次迭代出元素，dataset不参与迭代。
 这样就可以建立一条dataset链，下游的dataset有上游dataset的指针，
 下游dataset的iterator也会调用上游dataset的iterator。
 反映在Python代码上，就是input pipeline，比如:
-dataset.interleave(...).map(...).batch(...).prefetch(...)。
+dataset.interleave(...).map(...).batch(...).prefetch(...)，
+从上游到下游，分别是original dataset、
+interleave dataset(由InterleaveDatasetOp构建而来)、
+map dataset(由MapDatasetOp构建而来)、
+batch dataset(由BatchDatasetOp构建而来)、
+prefetch dataset(由PrefetchDatasetOp构建而来)。
 
 - 在python中构建input pipeline时，对应的C++代码是创建了一条DatasetBase链。
 当python中iter(dataset)时，C++代码主要做了两件事情。
