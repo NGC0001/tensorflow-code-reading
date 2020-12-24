@@ -10,20 +10,27 @@ Release TensorFlow 2.4.0 即将发布。
 
 ## To Do List:
 
+- [ ] multi-device iterator / generator dataset
+
 - [ ] function and function library
 - [ ] kernel/op/graph/node/function.
 how a graph built/placed/runned.
-
 - [ ] the interface between python and c++ in tensorflow.
+- [ ] compile a debug version tensorflow.
 
 - [ ] device manager
 - [ ] placer
-- [ ] eager
+- [ ] eager mode
+- [ ] Tensor vs EagerTensor:
+What hapens when a Tensor returned from a function
+is converted into EagerTensor in eager mode.
 - [ ] async op
+- [ ] function retracing
+- [ ] AutoDiff and GradientTape (in graph and eager)
 - [ ] cancellation manager
 - [ ] rendezvous
 - [ ] grappler
-- [ ] xla/compiler
+- [ ] xla/compiler/GraphOptimization
 - [ ] stream-executor
 
 ## Notes:
