@@ -13,10 +13,8 @@ Release TensorFlow 2.4.0 即将发布。
 - [ ] multi-device iterator / generator dataset
 
 - [ ] function and function library
-- [ ] kernel/op/graph/node/function.
-how a graph built/placed/runned.
+- [ ] kernel/op/graph/node/function. how a graph built/placed/runned.
 - [ ] the interface between python and c++ in tensorflow.
-- [ ] compile a debug version tensorflow.
 
 - [ ] device manager
 - [ ] placer
