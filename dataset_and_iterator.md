@@ -211,11 +211,11 @@ prefetch dataset(由PrefetchDatasetOp构建而来)。
 
 - 在python中构建input pipeline时，对应的C++代码是创建了一条DatasetBase链。
 当python中iter(dataset)时，C++代码主要做了两件事情。
-一是调用XxxIteratorXxx算子，
+一是调用XxxIteratorXxx算子(Op)，
 在ResourceMgr中建立IteratorResource并获得它的ResourceHandle，
 这一步是为了把iterator作为resource交由resource manager来管理，
 但此时iterator resource并没有和dataset关联起来。
-二是调用MakeIterator算子，
+二是调用MakeIterator算子(Op，对应的kernel是MakeIterator)，
 该算子的input包含一个ResourceHandle和一个DatasetBase，
 该算子根据ResourceHandle获取IteratorResource，
 并调用IteratorResource::SetIteratorFromDataset，
@@ -232,3 +232,40 @@ tensorflow/python/data/ops/iterator\_ops.py。
 而这些dataset/iterator相关的C++算子的调用接口则位于
 tensorflow/python/ops/gen\_dataset\_ops.py，
 因此dataset\_ops.py和iterator\_ops.py会大量调用gen\_dataset\_ops.py。
+
+### MultiDeviceIterator。
+
+- tensorflow/core/kernels/data/multi\_device\_iterator\_ops.cc。
+类MultiDeviceIterator，该类继承了ResourceBase，
+该类通过其嵌套类MultiDeviceBuffer把一路数据(输入)轮流分发到多路(输出)，
+该类提供了函数GetNextFromShard(...,int shard\_num,...)
+来获取第shard\_num路的下一份数据。
+类MultiDeviceIterator::MultiDeviceBuffer，
+该类含有一个host iterator(IteratorBase)
+以及一个buffer列表(每个buffer是一个
+MultiDeviceIterator::MultiDeviceBuffer::HostBuffer对象)，
+buffer列表中的每个buffer代表一路数据(输出)，
+该类异步地从host iterator中获取(输入)数据并轮流放入各个buffer中。
+MultiDeviceIterator::MultiDeviceBuffer::HostBuffer，
+该类使用一个队列std::deque<HostBufferElement>来缓存多份数据，
+队列里每个HostBufferElement对象中存有一份数据。
+MultiDeviceIteratorHandleOp、AnonymousMultiDeviceIteratorOp、
+MultiDeviceIteratorInitOp、MultiDeviceIteratorGetNextFromShardOp、
+DeleteMultiDeviceIteratorOp ...:
+这些类是围绕MultiDeviceIterator类的一些操作和封装，
+其中MultiDeviceIteratorHandleOp是OpKernel，注册到了Op MultiDeviceIterator。
+
+- tensorflow/python/data/ops/multi\_device\_iterator\_ops.py。
+类MultiDeviceIterator，是一个把数据prefetch到多个device上的类，
+该类通过调用C++ Op MultiDeviceIterator
+(调用接口为tensorflow.python.ops.gen\_dataset\_ops.multi\_device\_iterator，
+也即tensorflow.raw\_ops.MultiDeviceIterator)，
+在host上生成多路buffer(每路对应一个device)，
+然后通过GeneratorDataset/remote\_call在各个device上生成各自的dataset，
+再在各device上进行prefetch。
+
+- tensorflow/python/distribute/input\_lib.py:
+该文件调用了tensorflow/python/data/ops/multi\_device\_iterator\_ops.py，
+用于为一些tensorflow.distribute.Strategy提供数据输入
+(比如MirroredStrategy，先用multi device iterator在各device上生成各自的一份数据，
+然后把数据封装为per replica value)。
