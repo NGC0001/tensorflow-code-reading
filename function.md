@@ -17,7 +17,7 @@ attributes specific、arguments、NodeDef列表、outputs等。
 根据一个FunctionDef中的NodeDef列表，新建一个NodeDef列表。
 并在新列表中设置各个node的attr values。
 新建的列表储存于一个InstantiationResult对象中。
-(use?)
+(what use?)
 
 - FunctionLibraryDefinition: 位于function.h。继承了OpRegistryInterface。
 该类通过function name在字典中检索function definition。
@@ -36,11 +36,13 @@ attributes specific、arguments、NodeDef列表、outputs等。
 
 - FunctionLibraryRuntime: 位于function.h。
 有纯虚函数Instantiate、纯虚函数Run/RunSync、
-纯虚函数CreateKernel、纯虚函数Clone等。
+纯虚函数CreateKernel、纯虚函数Clone、纯虚函数GetFunctionBody等。
 
 - CustomKernelCreator: 位于function.h。
 有纯虚函数CreateKernel。可用于创建执行某个function的OpKernel。
 该类可供FunctionLibraryRuntime::CreateKernel调用。
+
+- DistributedFunctionLibraryRuntime: 位于function.h。
 
 ### tensorflow/core/common\_runtime目录中function的相关接口。
 
@@ -66,4 +68,11 @@ CallOp: 位于function.cc。继承AsyncOpKernel。
 其构造函数接受一个function handle。
 其ComputeAsync函数通过调用FunctionLibraryRuntime::Run来执行一个特定function。
 
-- FunctionBody:
+- FunctionBody: 位于function\_body.h。
+含有FunctionDef/graph指针/arg types/return types/
+arg nodes/return nodes/control return nodes等。
+
+---
+
+- ProcessFunctionLibraryRuntime: 位于process\_function\_library\_runtime.h。
+该类保存所有的FunctionLibraryRuntime对象(每个device一个FunctionLibraryRuntime)。

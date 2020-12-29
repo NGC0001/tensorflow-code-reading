@@ -25,6 +25,7 @@ is converted into EagerTensor in eager mode.
 - [ ] async op
 - [ ] function retracing
 - [ ] AutoDiff and GradientTape (in graph and eager)
+- [ ] AutoGraph
 - [ ] cancellation manager
 - [ ] rendezvous
 - [ ] grappler
