@@ -87,7 +87,8 @@ placement遵从以下约束：
 (4)colocation group中的限制条件会被满足。
 有函数Run，执行place过程，该函数自身满足了限制条件(1)，
 其余限制条件主要依靠ColocationGraph类来帮助满足，
-该函数做了一些小的优化，在此基础上默认使用第一个可用的device。
+该函数做了一些小的优化，
+在此基础上默认把node放到可行的device列表中第一个device上。
 
 - ColocationGraph: 位于colocation\_graph.h。
 
