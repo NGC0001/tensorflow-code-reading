@@ -54,6 +54,7 @@ FunctionLibraryRuntime::Handle/LocalHandle: 位于function.h。
 该类可供FunctionLibraryRuntime::CreateKernel调用。
 
 - DistributedFunctionLibraryRuntime: 位于function.h。
+有纯虚函数Instantiate/Run。
 
 ### tensorflow/core/common\_runtime目录中function的相关接口。
 
@@ -67,7 +68,12 @@ FunctionLibraryDefinition/GraphOptimizer等等。
 (FunctionLibraryRuntimeImpl::Item对象)。
 有函数FunctionDefToBody，该函数通过调用FunctionDefToBodyHelper，
 从function def和attrs构建function body(function body中有function的graph)。
-有函数Instatiate，该函数根据function name/attr等来实例化一个function item。
+有函数CreateItem，该函数用GraphOptimizer对function graph进行优化，
+并利用优化后的图创建item中的Executor。
+有函数GetOrCreateItem，该函数根据local handle查找function item，
+如果item中尚未创建executor，则调用CreateItem创建executor。
+有函数Instatiate，该函数根据function name/attr等来实例化一个function item，
+并根据需要调用GetOrCreateItem来创建item中的executor。
 有函数Run/RunSync，该函数根据handle找到function item，调用item中的executor。
 有函数CreateKernel，用于根据NodeProperties创建一个kernel，
 该函数可以根据需要选择是否使用CustomKernelCreator，
@@ -96,11 +102,23 @@ arg nodes/return nodes/control return nodes等。
 
 - ProcessFunctionLibraryRuntime: 位于process\_function\_library\_runtime.h。
 该类保存所有的FunctionLibraryRuntime对象(每个device一个FunctionLibraryRuntime)。
+含有Env/FunctionLibraryDefinition/device manager/DeviceSet/
+DistributedFunctionLibraryRuntime(parent)/rendezvous factory/
+Handle-FunctionData table/Handle-MultiDeviceFunctionData table/
+string-Handle table/Device-FunctionLibraryRuntime table等等。
 有函数GetFLR，用于返回指定device上的FunctionLibraryRuntime。
-有函数GetFunctionLibraryDefinition。
-有函数AddHandle/GetHandle/GetHandleOnDevice/Instantiate/Run/RunSync。
-有函数IsMultiDevice/RunMultiDevice/InstantiateMultiDevice/AddMultiDeviceHandle。
-有函数Clone。
+有函数Instantiate/InstantiateRemote/InstantiateMultiDevice，
+用于实例化一个function，根据function所分布的device的不同，
+调用一个或多个device上的FunctionLibraryRuntime::Instantiate，
+或者调用DistributedFunctionLibraryRuntime::Instantiate(remote function)，
+其中函数InstantiateMultiDevice涉及到图的placer/optimization/partition等。
+有函数Run/RunInternal/RunMultiDevice，用于执行一个function，
+根据function所分布的device的不同，
+调用一个或多个device上的FunctionLibraryRuntime::Run，
+或者调用DistributedFunctionLibraryRuntime::Run(remote function)。
+有函数Clone/GetFunctionLibraryDefinition/
+AddHandle/GetHandle/GetHandleOnDevice/RunSync/
+IsMultiDevice/AddMultiDeviceHandle等等。
 
 - ProcessFunctionLibraryRuntime::ComponentFunctionData:
 位于process\_function\_library\_runtime.h。

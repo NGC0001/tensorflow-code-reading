@@ -10,8 +10,7 @@ Release TensorFlow 2.4.0 即将发布。
 
 ## To Do List:
 
-- [ ] multi-device iterator / generator dataset
-
+- [ ] what the op/node/graph/function attrs are.
 - [ ] function and instantiation and function library
 - [ ] kernel/op/graph/node/function. how a graph built/placed/runned.
 - [ ] the interface between python and c++ in tensorflow.
@@ -28,8 +27,9 @@ is converted into EagerTensor in eager mode.
 - [ ] AutoGraph
 - [ ] cancellation manager
 - [ ] rendezvous
+- [ ] GraphOptimizer
 - [ ] grappler
-- [ ] xla/compiler/GraphOptimization
+- [ ] xla/compiler
 - [ ] stream-executor
 
 ## Notes:
