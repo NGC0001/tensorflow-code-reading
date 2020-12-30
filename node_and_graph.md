@@ -1,8 +1,9 @@
 ### tensorflow/core/framework目录中node/graph相关的接口。
 
 - NodeDef: 位于node\_def.proto。
-含有name(图内唯一)、op name(以\_开头，internal use)、
-inputs(以字符串形式记录input来源，src\_node:src\_output)、
+含有name(在一张图内是唯一的)、op name(以\_开头，internal use)、
+inputs(以字符串形式记录该结点的input来自哪个结点的第几个输出，
+格式为src\_node:src\_output)、
 device(device限制条件,optional)、
 attr(对应于OpDef中的attr)等。
 
@@ -18,7 +19,7 @@ attr(对应于OpDef中的attr)等。
 ---
 
 - GraphDef: 位于graph.proto。
-含有nodes/FunctionDefLibrary/graph version。
+含有NodeDef列表/FunctionDefLibrary/graph version。
 
 - GraphToFunctionDef: 位于graph\_to\_functiondef.h。
 该函数把一个Graph转变成一个FunctionDef。
@@ -64,3 +65,15 @@ edges/num\_edges/assigned device names等等。
 
 - GraphDefBuilder::Options: 位于graph\_def\_builder.h。
 是GraphDefBuilder的辅助类。该类调用了NodeBuilder。
+
+### tensorflow/core/common\_runtime目录中node/graph相关的接口。
+
+- GraphConstructor: 位于graph\_constructor.h。
+有static函数Construct，该函数用于从NodeDef列表/GraphDef构建一张图。
+
+- ConvertNodeDefsToGraph: 函数，位于graph\_constructor.h。
+该函数利用GraphConstructor::Construct从NodeDef列表构建一张图。
+
+- ConvertGraphDefToGraph: 函数，位于graph\_constructor.h。
+该函数利用GraphConstructor::Construct从GraphDef构建一张图。
+
