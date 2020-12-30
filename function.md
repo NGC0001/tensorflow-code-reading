@@ -73,6 +73,7 @@ FunctionLibraryDefinition/GraphOptimizer等等。
 有函数GetOrCreateItem，该函数根据local handle查找function item，
 如果item中尚未创建executor，则调用CreateItem创建executor。
 有函数Instatiate，该函数根据function name/attr等来实例化一个function item，
+该函数调用FunctionDefToBody创建item中的FunctionBody，
 并根据需要调用GetOrCreateItem来创建item中的executor。
 有函数Run/RunSync，该函数根据handle找到function item，调用item中的executor。
 有函数CreateKernel，用于根据NodeProperties创建一个kernel，

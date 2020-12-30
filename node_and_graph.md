@@ -4,7 +4,7 @@
 含有name(在一张图内是唯一的)、op name(以\_开头，internal use)、
 inputs(以字符串形式记录该结点的input来自哪个结点的第几个输出，
 格式为src\_node:src\_output)、
-device(device限制条件,optional)、
+device(requested device for this node, optional)、
 attr(对应于OpDef中的attr)等。
 
 - NodeDefBuilder: 位于node\_def\_builder.h。
@@ -77,3 +77,18 @@ edges/num\_edges/assigned device names等等。
 - ConvertGraphDefToGraph: 函数，位于graph\_constructor.h。
 该函数利用GraphConstructor::Construct从GraphDef构建一张图。
 
+- Placer: 位于placer.h。用于把一张图的各个node分配到DeviceSet中的各个device上。
+目前placer是独立于各个图的，但将来tensorflow也许会定义统一的placement接口，
+并让各个图拥有各自的placer成员。
+placement遵从以下约束：
+(1)已经assigned的node不再更改device；
+(2)node中的device specification会被满足；
+(3)referece edge连接的连个node会在同一device上；
+(4)colocation group中的限制条件会被满足。
+有函数Run，执行place过程，该函数自身满足了限制条件(1)，
+其余限制条件主要依靠ColocationGraph类来帮助满足，
+该函数做了一些小的优化，在此基础上默认使用第一个可用的device。
+
+- ColocationGraph: 位于colocation\_graph.h。
+
+- Member: 位于colocation\_graph.h。
