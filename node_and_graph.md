@@ -66,6 +66,12 @@ edges/num\_edges/assigned device names等等。
 - GraphDefBuilder::Options: 位于graph\_def\_builder.h。
 是GraphDefBuilder的辅助类。该类调用了NodeBuilder。
 
+---
+
+- Partition: 函数，位于graph\_partition.h。
+用于把图分成不同device上的子图。
+该函数的重要工作之一是添加一些在device之间Send/Receive数据的nodes。
+
 ### tensorflow/core/common\_runtime目录中node/graph相关的接口。
 
 - GraphConstructor: 位于graph\_constructor.h。
@@ -77,22 +83,37 @@ edges/num\_edges/assigned device names等等。
 - ConvertGraphDefToGraph: 函数，位于graph\_constructor.h。
 该函数利用GraphConstructor::Construct从GraphDef构建一张图。
 
+---
+
 - Placer: 位于placer.h。用于把一张图的各个node分配到DeviceSet中的各个device上。
-目前placer是独立于各个图的，但将来tensorflow也许会定义统一的placement接口，
-并让各个图拥有各自的placer成员。
-placement遵从以下约束：
+目前placer是独立于各个图的，但将来tensorflow也许会定义统一的placer接口，
+并让各个图可以拥有各自专属的placer。
+placement遵从以下限制条件：
 (1)已经assigned的node不再更改device；
 (2)node中的device specification会被满足；
-(3)referece edge连接的连个node会在同一device上；
-(4)colocation group中的限制条件会被满足。
-有函数Run，执行place过程，该函数自身满足了限制条件(1)，
-其余限制条件主要依靠ColocationGraph类来帮助满足，
+(3)referece edge连接的两个nodes会在同一device上；
+(4)同一个colocation group中的nodes会在同一个device上。
+同时placement也会考虑一些优化措施。
+有函数Run，用来执行placement，
+该函数主要依靠ColocationGraph类来帮助满足各限制条件，
+但该函数自身也能满足限制条件(1)，
 该函数做了一些小的优化，
-在此基础上默认把node放到可行的device列表中第一个device上。
+在此基础上默认把node放到可行的device列表中的第一个device上。
 
 - ColocationGraph: 位于colocation\_graph.h。
-用到了[disjoint-set forest](
+用到了[incremental connectivity (disjoint-set forest / union-find algorithm)](
 http://web.stanford.edu/class/archive/cs/cs166/cs166.1166/lectures/16/Small16.pdf
-)算法。
+)算法。该类配合Placer完成node的placement。
+该类根据各限制条件和各优化措施来把各个node划分到不同的coloation groups，
+其中同一个colocation group中的nodes需要被放到同一个device上。
+同时该类为每个colocation group都维护着一个可以放置的device列表，
+这个列表随着placement的进行是不断变化的，
+比如当一个colocation group中的某node被放置到device a后，
+则这个colocation group中其他的所有node都只能被放置到device a上。
 
 - Member: 位于colocation\_graph.h。
+用于在ColocationGraph对象中表示一个node。
+
+- PartitionFunctionGraph: 函数，位于partitioning\_utils.h。
+用于把place过后的图分成不同device上的子图。
+核心工作是通过函数Partition来完成。

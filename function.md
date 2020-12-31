@@ -80,6 +80,10 @@ FunctionLibraryDefinition/GraphOptimizer等等。
 该函数可以根据需要选择是否使用CustomKernelCreator，
 可以根据NodeProperties中的op来确定所创建的kernel的类型
 (普通OpKernel，还是执行某个function的CallOp)。
+两个不同device上的FunctionLibraryRuntimeImpl对象
+可以互相Initiate/Run对方的function，
+但这需要借由ProcessFunctionLibraryRuntime对象来实现，
+这也是tensorflow中RemoteCall的工作方式。
 
 - FunctionLibraryRuntimeImpl::Item: 位于function.cc。
 该类保存一个function实例化产生的结果。
@@ -112,7 +116,8 @@ string-Handle table/Device-FunctionLibraryRuntime table等等。
 用于实例化一个function，根据function所分布的device的不同，
 调用一个或多个device上的FunctionLibraryRuntime::Instantiate，
 或者调用DistributedFunctionLibraryRuntime::Instantiate(remote function)，
-其中函数InstantiateMultiDevice涉及到图的placer/optimization/partition等。
+其中函数InstantiateMultiDevice涉及到图的
+placement(Placer)/optimization/partition(PartitionFunctionGraph)等。
 有函数Run/RunInternal/RunMultiDevice，用于执行一个function，
 根据function所分布的device的不同，
 调用一个或多个device上的FunctionLibraryRuntime::Run，
