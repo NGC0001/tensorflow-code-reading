@@ -91,5 +91,8 @@ placement遵从以下约束：
 在此基础上默认把node放到可行的device列表中第一个device上。
 
 - ColocationGraph: 位于colocation\_graph.h。
+用到了[disjoint-set forest](
+http://web.stanford.edu/class/archive/cs/cs166/cs166.1166/lectures/16/Small16.pdf
+)算法。
 
 - Member: 位于colocation\_graph.h。
