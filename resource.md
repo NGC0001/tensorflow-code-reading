@@ -31,6 +31,15 @@ ResourceMgr::ResourceAndName中含有resource name和ResourceBase指针。
 看起来是用来抽象resource manager中的特定container，
 用于保存per step的resource。
 
+- ResourceHandle: 位于resource\_handle.h。
+该类的对象可以放入DT\_RESOURCE类型的Tensor。
+包含有device/container/name/dtypes\_and\_shapes等信息，
+通过这些信息可以从resource manager中检索到相应的resource。
+一般地，如果某个OpKernel需要使用一个resource，
+那么该OpKernel的Compute函数的input tensors中，
+会有一个含有ResourceHandle的DT\_RESOURCE类型的Tensor，
+利用该ResourceHandle可以从resource manager中检索到相应的resource。
+
 - MakeResourceHandle: 位于resource\_mgr.h。
 该函数用container name/resource name/device等信息生成一个ResourceHandle。
 
