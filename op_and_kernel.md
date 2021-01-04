@@ -5,8 +5,10 @@
 
 ---
 
+- AttrValue: 位于attr\_value.proto。用于保存Op的attr的值。
+
 - OpDef: 位于op\_def.proto。
-记录一个op的name/input/output/optimizationConstraints等。
+记录一个op的name/input/output/attr/optimizationConstraints等。
 
 - InferenceContext: 位于shape\_inference.h。
 该类配合op的shape inference function来完成op的output的shape的自动推断。
@@ -24,7 +26,7 @@
 
 - OpRegistry: 位于op.h。继承OpRegistryInterface。
 可以注册op的OpRegistrationData。
-其Global静态函数提供了一个singleton。
+其Global静态函数返回该类的一个static local实例。
 
 - REGISTER\_OP: 位于op.h。macro。
 利用OpDefBuilderWrapper类和其他一些操作来构建op并注册到OpRegestry::Global()中。

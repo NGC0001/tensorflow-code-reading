@@ -2,13 +2,19 @@
 
 - tensorflow中，resource可以被认为是不直接参与计算、
 但在计算的各个step之间保存信息(stateful)、占据一定(0或更多)mem的对象。
-比如获取data的iterator。
+比如获取data的iterator就是resource。
+各resource放入resource manager中进行管理。
+ResourceHandle对象是从resource manager中获取resource的句柄，
+利用一个ResourceHandle对象中储存的信息，
+可以从resource manager中检索到相应的resource。
+而ResourceHandle对象能够被放入Tensor中，
+这也就间接使得resource可以通过Tensor进行传递。
 
 - ResourceBase: 位于resource\_mgr.h。是所有resource的基类。
 继承自RefCounted。
 只定义了虚函数MemoryUsed和纯虚函数DebugString。
 
-- ResourceMgr: 位于resource\_mgr.h。用于管理resource。
+- ResourceMgr: 位于resource\_mgr.h。用于管理resource的resource manager。
 ResourceMgr使用一个字典std::unordered\_map\<string,
 Container\*\>储存各个Container。
 其中Container也是字典
@@ -27,8 +33,6 @@ ResourceMgr::ResourceAndName中含有resource name和ResourceBase指针。
 
 - MakeResourceHandle: 位于resource\_mgr.h。
 该函数用container name/resource name/device等信息生成一个ResourceHandle。
-(ResourceHandle:通过一个ResourceHandle中储存的信息可以从
-resource manager中找到相应的resource。)
 
 - CreateResource/LookupResource/DeleteResource...:
 位于resource\_mgr.h。

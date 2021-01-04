@@ -44,7 +44,7 @@
 比较特殊的类型有DT\_INVALID/DT\_STRING/DT\_VARIANT/DT\_RESOURCE。
 
 - types.h/types.cc：定义了数据类型的一些表示和操作。
-string/resource类型只能位于host mem中。
+string/resource类型只能位于host mem中(to-be-verified)。
 
 - Variant: 位于variant.h。
 是一个type-erased container，用于封装满足特定条件的任意类型。
