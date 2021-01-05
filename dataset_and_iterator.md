@@ -133,6 +133,15 @@ output\_shapes/output\_types/func\_metadata等。
 所得iterator被放入IteratorBase列表中，
 GetNextInternal函数会轮流对这些iterator调用iterator.GetNext，返回所得结果。
 
+---
+
+- OptimizeDatasetOp: 位于optimize\_dataset\_op.h。
+继承自UnaryDatasetOpKernel。
+该类比较特殊，工作过程与普通的DatasetOpKernel不同。
+该类把一个dataset(包括其上游dataset)的pipeline构建成一张图，并对图进行优化。
+当在python中调用iter(dataset)时，会调用dataset.\_apply\_options()。
+而dataset.\_apply\_options()则可能会用到OptimizeDatasetOp。
+
 ### tensorflow/core/kernels/data目录中将Iterator作为resouce进行管理。
 
 - IteratorResource: 位于iterator\_ops.h。继承了ResourceBase。
