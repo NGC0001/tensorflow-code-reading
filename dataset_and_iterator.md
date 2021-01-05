@@ -12,7 +12,8 @@ DatasetContext的构造方法之一通过OpKernelContext构造而来。
 
 - DatasetVariantWrapper: 位于dataset.cc。
 包含有DatasetBase指针，并对DatasetBase进行引用计数。
-该类可以封装入一个Variant，从而使得DatasetBase能封装入variant。
+该类可以封装入一个Variant对象，从而使得DatasetBase能封装入Variant对象
+(而Variant对象可以装入DT\_VARIANT类型的Tensor)。
 
 - WrappedDatasetVariantWrapper/WrapDatasetVariantOp/UnwrapDatasetVariantOp:
 位于dataset.cc。
@@ -131,6 +132,15 @@ output\_shapes/output\_types/func\_metadata等。
 从所获元素(得到dataset,再从所得dataset)得到iterator，
 所得iterator被放入IteratorBase列表中，
 GetNextInternal函数会轮流对这些iterator调用iterator.GetNext，返回所得结果。
+
+---
+
+- OptimizeDatasetOp: 位于optimize\_dataset\_op.h。
+继承自UnaryDatasetOpKernel。
+该类比较特殊，工作过程与普通的DatasetOpKernel不同。
+该类把一个dataset(包括其上游dataset)的pipeline构建成一张图，并对图进行优化。
+当在python中调用iter(dataset)时，会调用dataset.\_apply\_options()。
+而dataset.\_apply\_options()则可能会用到OptimizeDatasetOp。
 
 ### tensorflow/core/kernels/data目录中将Iterator作为resouce进行管理。
 

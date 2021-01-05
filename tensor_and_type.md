@@ -33,7 +33,7 @@
 - Tensor: 位于tensor.h。包含一个TensorShape和一个TensorBuffer指针。
 析构时会把TensorBuffer的引用数减1。
 有Slice/SubSlice方法，它们返回的新Tensor使用TensorBuffer的子类SubBuffer。
-有一些列的方法，将自身转化为TTypes类中的类型，
+有一系列的方法，将自身转化为TTypes类中的类型，
 比如Tensor::scalar/vec/matrix/tensor/flat方法
 分别将Tensor转化为TTyptes::Scalar/Vec/Matrix/Tensor/Flat。
 而TTypes类是对Eigen库的封装（位于文件tensor\_types.h中）。
@@ -53,9 +53,8 @@ Variant类的对象可以装入DT\_VARIANT类型的Tensor。
 
 - ResourceHandle: 位于resource\_handle.h。
 该类的对象可以放入DT\_RESOURCE类型的Tensor。
-ResourceHandle是指向resource manager中某个resource的句柄。
-包含有device/container/name/dtypes\_and\_shapes等信息，
-通过这些信息可以从resource manager中检索到相应的resource。
+利用该类的对象中所包含的device/container/name/dtypes\_and\_shapes等信息，
+可以从resource manager中检索到相应的resource。
 
 ### 关于Tensor
 
