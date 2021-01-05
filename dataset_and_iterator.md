@@ -12,7 +12,8 @@ DatasetContext的构造方法之一通过OpKernelContext构造而来。
 
 - DatasetVariantWrapper: 位于dataset.cc。
 包含有DatasetBase指针，并对DatasetBase进行引用计数。
-该类可以封装入一个Variant，从而使得DatasetBase能封装入variant。
+该类可以封装入一个Variant对象，从而使得DatasetBase能封装入Variant对象
+(而Variant对象可以装入DT\_VARIANT类型的Tensor)。
 
 - WrappedDatasetVariantWrapper/WrapDatasetVariantOp/UnwrapDatasetVariantOp:
 位于dataset.cc。
