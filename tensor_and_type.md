@@ -61,3 +61,5 @@ ResourceHandle是指向resource manager中某个resource的句柄。
 
 - 在tensorflow中，很多被操作的对象都尽可能被直接/间接地装入tensor中。
 
+
+### The placement of TensorBuffer's data (Host memory or device memory)
