@@ -33,7 +33,7 @@
 - Tensor: 位于tensor.h。包含一个TensorShape和一个TensorBuffer指针。
 析构时会把TensorBuffer的引用数减1。
 有Slice/SubSlice方法，它们返回的新Tensor使用TensorBuffer的子类SubBuffer。
-有一些列的方法，将自身转化为TTypes类中的类型，
+有一系列的方法，将自身转化为TTypes类中的类型，
 比如Tensor::scalar/vec/matrix/tensor/flat方法
 分别将Tensor转化为TTyptes::Scalar/Vec/Matrix/Tensor/Flat。
 而TTypes类是对Eigen库的封装（位于文件tensor\_types.h中）。
