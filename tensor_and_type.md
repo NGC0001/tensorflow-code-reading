@@ -56,6 +56,8 @@ Variant类的对象可以装入DT\_VARIANT类型的Tensor。
 利用该类的对象中所包含的device/container/name/dtypes\_and\_shapes等信息，
 可以从resource manager中检索到相应的resource。
 
+- TTypes: 位于tensor_types.h。是Eigen::TensorMap类
+
 ### 关于Tensor
 
 - 在tensorflow中，很多被操作的对象都尽可能被直接/间接地装入tensor中。

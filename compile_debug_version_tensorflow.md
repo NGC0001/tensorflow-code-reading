@@ -22,7 +22,7 @@
 
 - Nvidia官网的deb包安装cudnn7.6.5及其dev包/doc包
 
-- 镜像内cuda不完整，需要安装部分cuda组件(tf源码configure提示缺少cublas\_api.h)。
+- 镜像内cuda不完整，需要安装部分cuda组件(tf源码configure提示缺少cublas\_api.h)。 (NOTE: 使用devel镜像不会缺少CUDA组件)
 安装Nvidia官网的cuda-repo的deb包（cuda网络安装版deb包）。
 apt update后，可以从apt源找到各种cuda组件包，但cublas缺少10.1版本。
 apt安装cuda-libraries-dev-10-1,cuda-libraries-10-1，会附带安装cublas10.2版本，
@@ -38,17 +38,17 @@ bazel build --config=cuda --strip=never -c dbg --verbose\_failures --keep\_going
 再把bazel的下载链接替换为 file:///path/to/downloaded/file (bazel使用curl，支持file://)
 
 - aws-checksum在dbg模式下汇编块编译错误，修改third\_party/aws/aws-checksums.bazel，添加gdb模式下的DEBUG\_BUILD。
-```
-29a30,35
->     defines = select({
->         "@org\_tensorflow//tensorflow:debug": [
->             "DEBUG\_BUILD"
->         ],
->         "//conditions:default": [],
->     }),
-```
-https://github.com/tensorflow/tensorflow/issues/37498 ,
-https://github.com/tensorflow/tensorflow/pull/42743/files
+    ```
+    29a30,35
+    >     defines = select({
+    >         "@org\_tensorflow//tensorflow:debug": [
+    >             "DEBUG\_BUILD"
+    >         ],
+    >         "//conditions:default": [],
+    >     }),
+    ```
+    https://github.com/tensorflow/tensorflow/issues/37498 ,
+    https://github.com/tensorflow/tensorflow/pull/42743/files
 
 - nenv虚拟环境下安装生成的包出错： invalid command bdist\_wheel，需要 pip3 install wheel 。
 

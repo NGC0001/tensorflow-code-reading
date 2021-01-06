@@ -1,5 +1,5 @@
-### tensorflow/core/framework目录中对op/kernel相关接口的定义。
-
+## tensorflow/core/framework目录中对op/kernel相关接口的定义。
+- https://zhuanlan.zhihu.com/p/34168765
 - 算子在tensorflow中包含两部分，
 面向图的接口定义Op，和执行计算过程的具体实现OpKernel。
 
@@ -14,10 +14,14 @@
 该类配合op的shape inference function来完成op的output的shape的自动推断。
 
 - OpRegistrationData: 位于op\_def\_builder.h。
-包含了op的OpDef、shape\_inference\_fn等。
+包含了op的OpDef、shape\_inference\_fn等。这个类的对象由全局注册器Registry负责分配，作用简单来说就是保存OpDef和OpShapeInferenceFn函数，前者保存有Op的各种具体信息，会由OpDefBuilder在最后的解析参数时（成员函数Finalize）放进来，后者在SetShapeFn传进来（由Wrapper转发），所谓注册就是将op name和OpRegistrationData关联起来，具体来说放进hashmap。
+
+    ```c++
+    mutable std::unordered_map<string, const OpRegistrationData*> registry_;
+    ```
 
 - OpDefBuilder: 位于op\_def\_builder.h。
-用于构建出一个OpRegistrationData。
+用于构建出一个OpRegistrationData。OpDefBuilder会负责接收Op的各种属性和参数定义（就是REGISTER_OP时指定的），最后统一解析（注意只是解析并不保证合法性之类的）并转给OpRegistrationData这个类（包括ShapeFn）。
 
 ---
 
