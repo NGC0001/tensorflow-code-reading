@@ -41,12 +41,13 @@
             return typename TTypes<T, NDIMS>::Tensor(base<T>(), dims);
         }
         ```
-- Need it necessary to always transfer the TensorBuffer's data_ to device memory.
+- Does it always need to transfer the TensorBuffer's data_ to device memory?
+- TODO: Finished the SetShapeFn function of HashTable.
 - Add more function related to Nvidia multi gpu HashTable
     - insert, set, get, update
     - insert_from_cpu, dump_to_cpu, dump_to_gpu, 
     - get_size, clear, remove
-    - stream_event_recource_create, stream_event_resource_destroy
+
 - Need understand LookupTableOp::Compute (core/kernels/lookup_table_op.h)
 - struct void operator()
 - core/util/gpu_kernel_helper.h for example of computing block count
@@ -133,10 +134,10 @@
     - stream_event_recource_create, stream_event_resource_destroy
 
 - Methods Argument:
-KeyType* keys
-ValType* vals
-size_t* len
-Stream_event_resource& s_e_resource
+    KeyType* keys
+    ValType* vals
+    size_t* len
+    Stream_event_resource& s_e_resource
 
 ### Nvidia Muti-GPU Hashtable Class Design
 - class name: MutableNvidiaHashTableOfScalars
