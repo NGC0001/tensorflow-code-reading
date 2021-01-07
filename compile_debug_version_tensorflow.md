@@ -6,7 +6,7 @@
 
 ### 已有环境：
 
-- docker镜像为由tensorflow/tensorflow:2.3.0-gpu得到的子镜像
+- 所用docker镜像为由tensorflow/tensorflow:2.3.0-gpu得到的子镜像
 
 - ubuntu18.04
 
@@ -18,19 +18,20 @@
 
 ### 编译过程/遇到的问题：
 
-- 首先尝试tf2.3.1版本源码，并尝试采用bazel的"-c dbg"编译选项。
+- 首先尝试使用tensorflow2.3.1版本源码。
 
-- Nvidia官网的deb包安装cudnn7.6.5及其dev包/doc包
+- Nvidia官网的deb包安装cudnn7.6.5及其dev包/doc包。
 
-- 镜像内cuda不完整，需要安装部分cuda组件(tf源码configure提示缺少cublas\_api.h)。 (NOTE: 使用devel镜像不会缺少CUDA组件)
+- 在tf源码目录下执行./configure时提示缺少cublas\_api.h，这是因为所用docker镜像内cuda组件不完整。 
+(NOTE: 可以考虑使用tensorflow的devel镜像。)
 安装Nvidia官网的cuda-repo的deb包（cuda网络安装版deb包）。
-apt update后，可以从apt源找到各种cuda组件包，但cublas缺少10.1版本。
+安装完毕后，执行apt update，此时可以从apt源找到各种cuda组件包。但cublas缺少10.1版本。
 apt安装cuda-libraries-dev-10-1,cuda-libraries-10-1，会附带安装cublas10.2版本，
 将cuda10.2目录下的cublas相关文件拷贝到cuda10.1目录中。
 
-- tf源码目录中configure时选择支持cuda，其他的如tensorrt等不选择。
+- tf源码目录中执行./configure，选择支持cuda，其他的如tensorrt等不选择。
 
-- 使用bazelisk，编译命令为
+- 使用bazelisk。尝试采用bazel的"-c dbg"编译选项。编译命令为
 bazel build --config=cuda --strip=never -c dbg --verbose\_failures --keep\_going
 //tensorflow/tools/pip\_package:build\_pip\_package
 
