@@ -25,6 +25,17 @@ ResourceMgr::ResourceAndName中含有resource name和ResourceBase指针。
 两个元素分别用于表示resource的type index、resource name。
 可以看出，resource manager使用两级字典来管理resource，
 即container name-\>resource key-\>resource。
+ResourceMgr类有函数Lookup，该函数根据参数找到指定的resource后，
+会返回resource的指针prsc，并且会调用prsc-\>Ref() (RefCounted::Ref)，
+使得这个resource的引用数加1，
+因而当Lookup的caller不再使用这个resource的时候，
+应当调用prsc-\>Unref() (RefCounted::Unref)，使得这个resource的引用数减1。
+ResourceMgr类有函数Create，该函数把一个resource的指针存入两级字典内，
+但该函数并不改变这个resource的引用数。
+ResourceMgr类有函数LookupOrCreate，
+该函数将resource的引用数加1(不论最终是lookup还是create)。
+ResourceMgr类有函数Delete，该函数把一个resource的指针从两级字典内删除，
+但该函数并不改变这个resource的引用数。
 
 - ScopedStepContainer: 位于resource\_mgr.h。
 含有step id/container/cleanup function。
@@ -55,6 +66,8 @@ resource并进行创建/查找/删除...。
 继承自OpKernel。用于生成ResourceHandle。
 
 - ResourceDeleter: 位于resource\_mgr.h。
-可以装入一个Variant中。
-该类的对象装入一个Variant类型的Tensor后，
-传递给resource deleter op，以便保证anonymous resource的销毁。
+该类含有一个ResourceDeleter::Helper对象。
+ResourceDeleter::Helper对象含有一个ResourceHandle和一个ResourceMgr\*，
+该对象在析构时，会调用ResourceMgr::Delete。
+ResourceDeleter类的对象装入一个Variant类型的Tensor后，
+可以传递给resource deleter op，以便保证anonymous resource的销毁。
