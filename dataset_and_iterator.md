@@ -155,8 +155,12 @@ device manager/resource manager/cancellation manager等。
 有函数GetNext，该函数调用DatasetBaseIterator::GetNext。
 
 - IteratorHandleOp: 位于iterator\_ops.h。继承了OpKernel。
-含有IteratorResource。
-该类的函数Compute生成IteratorResource的ResourceHandle。
+该类含有一个IteratorResource的指针。
+该类的函数Compute会生成相应IteratorResource的ResourceHandle，
+如果IteratorResource指针为空，
+则还会先调用ResourceMgr::LookupOrCreate获得并Ref指针。
+该类析构时，会在IteratorResource指针上进行Unref，
+并根据情况调用ResourceMgr::Delete。
 
 - AnonymousResourceOp: 位于dataset\_utils.h。模板类，继承了OpKernel。
 有纯虚函数CreateResource。
@@ -168,7 +172,7 @@ device manager/resource manager/cancellation manager等。
 继承了AnonymousResourceOp\<IteratorResource\>。
 该类的函数CreateResource生成一个IteratorResource。
 该类作用类似IteratorHandleOp，但生成的resource handle不会被share，
-该类也不会hold a referece to these handles。
+该类不会保存iterator resource指针(当然也不会Ref)。
 
 - HybridAsyncOpKernel: 位于iterator\_ops.h。继承AsyncOpKernel。
 
