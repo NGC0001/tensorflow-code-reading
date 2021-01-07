@@ -14,6 +14,9 @@ Release TensorFlow 2.4.0 即将发布。
 - [ ] kernel/op/graph/node/function. how a graph built/placed/runned.
 - [ ] the interface between python and c++ in tensorflow.
 - [ ] python arg-captured function
+- [ ] Graph rewriting in dataset optimization (optimize\_dataset\_op).
+- [ ] ProcessFunctionLibraryRuntime::SendTensor/RescTensor
+- [ ] StridedSlice: does this kernel allocate new memory?
 
 - [ ] variables & optimizers
 - [ ] device manager
