@@ -71,3 +71,11 @@ ResourceDeleter::Helper对象含有一个ResourceHandle和一个ResourceMgr\*，
 该对象在析构时，会调用ResourceMgr::Delete。
 ResourceDeleter类的对象装入一个Variant类型的Tensor后，
 可以传递给resource deleter op，以便保证anonymous resource的销毁。
+
+- ResourceOpKernel: 位于resource\_op\_kernel.h。
+模板类，继承了OpKernel。该类保存有一个resource指针。
+该类有纯虚函数CreateResource。
+该类的Compute函数会生成相应resource的ResourceHandle，
+当resource指针为空时，还会首先创建resource(通过调用CreateResource)，
+并对resource进行Ref。
+该类析构时会对resource进行Unref，并根据需要从resource manager中删除resource。
