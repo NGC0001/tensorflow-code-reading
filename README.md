@@ -12,7 +12,7 @@ Release TensorFlow 2.4.0 即将发布。
 
 - [ ] what the op/node/graph/function attrs are.
 - [ ] kernel/op/graph/node/function. how a graph built/placed/runned.
-- [ ] the interface between python and c++ in tensorflow.
+- [ ] the interface between python and c++ in tensorflow. (and raw\_ops)
 - [ ] python arg-captured function
 - [ ] Graph rewriting in dataset optimization (optimize\_dataset\_op).
 - [ ] ProcessFunctionLibraryRuntime::SendTensor/RescTensor
@@ -27,7 +27,7 @@ Release TensorFlow 2.4.0 即将发布。
 What hapens when a Tensor returned from a function
 is converted into EagerTensor in eager mode.
 - [ ] async op
-- [ ] Executor/stream-executor/graph-runner
+- [ ] Executor/graph-algorithm/stream-executor/graph-runner
 - [ ] function retracing
 - [ ] AutoDiff and GradientTape (in graph and eager)
 - [ ] AutoGraph
@@ -35,7 +35,7 @@ is converted into EagerTensor in eager mode.
 - [ ] grappler
 - [ ] cancellation manager
 - [ ] rendezvous
-- [ ] xla/compiler
+- [ ] xla/jit/compiler
 
 ## Notes:
 
