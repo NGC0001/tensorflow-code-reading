@@ -6,3 +6,5 @@
 
 
 - [inline Specifier Compilation](https://leimao.github.io/blog/Inline-Specifier-Compilation): The `inline` specifier will suggest compiler (not guarantee) to place a copy of the code of that function at each point where the function is called at compile time.
+
+- CMake learning resource: https://github.com/ttroy50/cmake-examples
