@@ -8,6 +8,9 @@
 Pre-Release TensorFlow 2.4.0-rc4 已经发布。
 Release TensorFlow 2.4.0 即将发布。
 
+- 笔记中提及"类A含有类B"的时候 ，不区分类A的对象是含有类B对象的实体，
+还是含有指向类B对象的指针。
+
 ## To Do List:
 
 - [ ] what the op/node/graph/function attrs are.
