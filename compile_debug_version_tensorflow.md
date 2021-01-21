@@ -1,10 +1,10 @@
-## 编译tensorflow2.3的可调试GPU版本
+## 编译tensorflow2.3的GPU可调试版本
 
 - TF官网源码编译手册 https://www.tensorflow.org/install/source
 
 - bazel官网使用说明 https://docs.bazel.build/versions/master/user-manual.html
 
-### 已有环境：
+#### 已有环境：
 
 - 所用docker镜像为由tensorflow/tensorflow:2.3.0-gpu得到的子镜像
 
@@ -16,7 +16,7 @@
 
 - python3.6.9
 
-### 编译过程/遇到的问题：
+#### 编译过程/遇到的问题：
 
 - 首先尝试使用tensorflow2.3.1版本源码。
 
@@ -67,3 +67,21 @@ bazel build --config=cuda -c opt --copt -g --strip=never --keep\_going --verbose
 //tensorflow/tools/pip\_package:build\_pip\_package ，
 同时删除aws-checksums的DEBUG\_BUILD。
 编译、安装、运行均成功。
+
+## tensorflow的调试
+
+- tensorflow has LOG messages and VLOG messages.
+TF\_CPP\_MIN\_LOG\_LEVEL controls LOG messages.
+It is the usual log level (INFO=0, WARNING=1, ERROR=2, etc.).
+VLOG messages are controled by TF\_CPP\_MIN\_VLOG\_LEVEL,
+and are actually always logged at the INFO log level.
+It means that in any case,
+TF\_CPP\_MIN\_LOG\_LEVEL=0 is needed to see any VLOG message.
+TF\_CPP\_MIN\_VLOG\_LEVEL defaults to 0 and as it increases,
+more debugging messages are logged in.
+Consider adding the following lines before importing tensorflow:
+```
+os.environ['TF\_CPP\_MIN\_LOG\_LEVEL'] = '0'
+os.environ['TF\_CPP\_MIN\_VLOG\_LEVEL'] = '3'
+os.environ['TF\_DUMP\_GRAPH\_PREFIX'] = '/tmp/tf_dump_graph'
+```
