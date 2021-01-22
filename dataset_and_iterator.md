@@ -185,8 +185,10 @@ device manager/resource manager/cancellation manager等。
 而后调用IteratorResouce::GetNext。
 
 - IteratorToStringHandleOp: 位于iterator\_ops.h。继承OpKernel。
-该类的Compute函数从OpKernelContext中获取IteratorResource，
-将IteratorResource进行SerializeAsString后装入一个string类型的Tensor。
+该类的Compute函数从OpKernelContext中获取一个resource handle，
+并验证这个resource handle的确对应一个iterator resource，
+随后调用ResourceHandle::SerializeAsString将resource handle序列化，
+并装入一个string类型的Tensor。
 
 - iterator\_ops.cc: 含有一些OpKernel的注册。
 kernel IteratorHandleOp被注册到Op Iterator和Op IteratorV2。
