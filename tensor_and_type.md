@@ -62,5 +62,7 @@ Variant类的对象可以装入DT\_VARIANT类型的Tensor。
 
 - 在tensorflow中，很多被操作的对象都尽可能被直接/间接地装入tensor中。
 
+- 在python代码中，有Tensor类，也有EagerTensor类。
+在C++代码中，也对eager模式有一些特殊处理。
 
 ### The placement of TensorBuffer's data (Host memory or device memory)

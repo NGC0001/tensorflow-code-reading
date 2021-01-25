@@ -141,3 +141,38 @@ IsMultiDevice/AddMultiDeviceHandle等等。
 位于process\_function\_library\_runtime.h。
 该类表示一个实例化后的remote function的相关信息。
 含有target device/local handle/function key等。
+
+### tensorflow/python/framework目录中function相关的python代码。
+
+- FunGraph: 位于func\_graph.py。
+该类是"Graph representing a function body"。
+该类记录一个function的inputs/outputs/
+variables/trainable\_variables/captures等等。
+
+- func\_graph\_from\_py\_func: 函数，位于func\_graph.py。
+该函数从一个python函数及input signature构建一个FunGraph对象，
+构建过程中会根据需要调用tensorflow.python.autograph模块。
+该函数似乎会执行所传入的python函数。
+
+### tensorflow/python/eager目录中function相关的python代码。
+
+- def\_function.py中定义了function函数(也即tf.function)、Function类等，
+它们最终依赖于function.py中定义的defun函数、Function类等。
+
+- function.py中的defun函数、Function类、ConcreteFunction类:
+defun函数最终会生成一个Function对象。
+Function类有\_create\_graph\_function方法，
+该方法会调用(python/framework/func\_graph.py中的)
+func\_graph\_from\_py\_func函数
+生成一个(python/framework/func\_graph.py中的)FunGraph对象，
+并用这个FunGraph对象生成一个ConcreteFunction对象。
+Function类有\_maybe\_define\_function方法，
+该方法根据input signature查找是否有缓存的对应的ConcreteFunction对象，
+如果有则直接返回找到的对象，
+如果没有则调用\_create\_graph\_function方法
+新建一个ConcreteFunction对象并把这个对象缓存起来。
+
+- ConcreteFunction: 位于function.py。
+该类用于封装function definition以及它的gradient。
+
+- function.py中还有一些类和函数用于构建function的gradient。
