@@ -152,7 +152,15 @@ variables/trainable\_variables/captures等等。
 - func\_graph\_from\_py\_func: 函数，位于func\_graph.py。
 该函数从一个python函数及input signature构建一个FunGraph对象，
 构建过程中会根据需要调用tensorflow.python.autograph模块。
-该函数似乎会执行所传入的python函数。
+该函数会以非eager模式执行所传入的python函数。
+
+- \_apply\_op\_helper: 函数，位于op\_def\_library.py。
+该函数在由python代码构建function graph的过程中起作用。
+非eager模式下，调用某个算子(比如Op Add)对应的python函数(比如tf.add)时，
+python函数并不会真的执行算子，
+而是会调用\_apply\_op\_helper，把算子插入到图中。
+该函数根据算子名称查找相应的op\_def，
+处理算子的inputs/attrs，在图中插入算子，返回算子、算子的输出等。
 
 ### tensorflow/python/eager目录中function相关的python代码。
 
