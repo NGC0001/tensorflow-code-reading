@@ -144,7 +144,13 @@ IsMultiDevice/AddMultiDeviceHandle等等。
 
 ### tensorflow/python/framework目录中function相关的python代码。
 
-- FunGraph: 位于func\_graph.py。
+- Tensor: 位于ops.py。该类即tf.Tensor。
+该类用于图模式下，在构建一个function的graph时用得到。
+该类对应于图运算中的tensor，但它并不是C++中Tensor类的python对应物。
+该类保存有tensor的dtype、产生这个tensor的op、
+这个tensor在这个op的outputs中的index。
+
+- FunGraph: 位于func\_graph.py。继承ops.Graph。
 该类是"Graph representing a function body"。
 该类记录一个function的inputs/outputs/
 variables/trainable\_variables/captures等等。
@@ -152,7 +158,9 @@ variables/trainable\_variables/captures等等。
 - func\_graph\_from\_py\_func: 函数，位于func\_graph.py。
 该函数从一个python函数及input signature构建一个FunGraph对象，
 构建过程中会根据需要调用tensorflow.python.autograph模块。
-该函数会以非eager模式执行所传入的python函数。
+该函数会处理inputs(通过调用函数\_get\_defun\_inputs进行处理，比如，
+如果一个input是TensorSpec对象/ops.EagerTensor对象则把它转换为ops.Tensor对象)，
+并以非eager模式执行所传入的python函数。
 
 - \_apply\_op\_helper: 函数，位于op\_def\_library.py。
 该函数在由python代码构建function graph的过程中起作用。
@@ -164,7 +172,8 @@ python函数并不会真的执行算子，
 
 ### tensorflow/python/eager目录中function相关的python代码。
 
-- def\_function.py中定义了function函数(也即tf.function)、Function类等，
+- def\_function.py中定义了function函数(也即tf.function)、
+Function类(tf.function返回的对象)等，
 它们最终依赖于function.py中定义的defun函数、Function类等。
 
 - function.py中的defun函数、Function类、ConcreteFunction类:
@@ -175,12 +184,16 @@ func\_graph\_from\_py\_func函数
 生成一个(python/framework/func\_graph.py中的)FunGraph对象，
 并用这个FunGraph对象生成一个ConcreteFunction对象。
 Function类有\_maybe\_define\_function方法，
-该方法根据input signature查找是否有缓存的对应的ConcreteFunction对象，
+该方法会处理function的inputs(对input args/input kwargs进行canonicalize)，
+根据input signature查找是否有缓存的对应的ConcreteFunction对象，
 如果有则直接返回找到的对象，
 如果没有则调用\_create\_graph\_function方法
 新建一个ConcreteFunction对象并把这个对象缓存起来。
+Function类有\_\_call\_\_方法、get\_concrete\_function方法，
+它们会调用\_maybe\_define\_function方法。
+Function.\_\_call\_\_会调用ConcreteFunction.\_filtered\_call。
 
 - ConcreteFunction: 位于function.py。
 该类用于封装function definition以及它的gradient。
 
-- function.py中还有一些类和函数用于构建function的gradient。
+- function.py中有一些类和函数用于构建function的gradient。
