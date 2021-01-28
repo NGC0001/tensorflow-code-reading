@@ -166,9 +166,10 @@ inputs(ops.Tensor对象列表)/output types等等。
 - Graph: 位于ops.py。该类即tf.Graph。
 该类代表tf.function中的计算图。
 该类含有图中的各个operation以及它们的name/id。
-有函数as\_graph\_def，可以把图serialize为GraphDef。
-有函数\_create\_op\_internal，可以根据op type/inputs等向图中插入operation，
+该类有函数as\_graph\_def，可以把图serialize为GraphDef。
+该类有函数\_create\_op\_internal，可以根据op type/inputs等向图中插入operation，
 并处理operation的一些与图相关的attr。
+该类有property \_c\_graph。
 
 - FuncGraph: 位于func\_graph.py。继承ops.Graph。
 该类是"Graph representing a function body"。
@@ -226,9 +227,18 @@ Function类有\_maybe\_define\_function方法，
 新建一个ConcreteFunction对象并把这个对象缓存起来。
 Function类有\_\_call\_\_方法、get\_concrete\_function方法，
 它们会调用\_maybe\_define\_function方法。
-Function.\_\_call\_\_会调用ConcreteFunction.\_filtered\_call。
+Function.\_\_call\_\_会调用ConcreteFunction.\_filtered\_call(
+最终会调用ConcreteFunction.\_flat\_call)。
 
 - ConcreteFunction: 位于function.py。
 该类用于封装function definition以及它的gradient。
+该类的对象在构建时用一个FuncGraph对象创建一个\_DelayedRewriteGradientFunctions对象，
+而\_DelayedRewriteGradientFunctions对象在构建时
+用一个FuncGraph对象创建一个\_EagerDefinedFunction对象，
+而\_EagerDefinedFunction对象在构建时会在FuncGraph对象上调用一些C++函数。
+ConcreteFunction.\_flat\_call最终会调用\_EagerDefinedFunction.call，
+eager模式下，\_EagerDefinedFunction.call会(通过function signature)
+调用C++ function(如果这是C++ function的第一次调用，被调用的function尚未实例化，
+C++代码会先进行function的实例化，即Instantiate)。
 
 - function.py中有一些类和函数用于构建function的gradient。
