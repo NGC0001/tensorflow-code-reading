@@ -144,6 +144,9 @@ IsMultiDevice/AddMultiDeviceHandle等等。
 
 ### tensorflow/python/framework目录中function相关的python代码。
 
+- ops.EagerTensor/ops.convert\_to\_tensor/constant\_op.constant:
+参考关于tensor的笔记。
+
 - Tensor: 位于ops.py。该类即tf.Tensor。
 该类用于图模式下，在构建一个function的graph时用得到。
 该类可以看作是图构建过程中tensor的占位符，它不拥有数据，
@@ -166,30 +169,6 @@ inputs(ops.Tensor对象列表)/output types等等。
 有函数as\_graph\_def，可以把图serialize为GraphDef。
 有函数\_create\_op\_internal，可以根据op type/inputs等向图中插入operation，
 并处理operation的一些与图相关的attr。
-
-- EagerTensor: 位于ops.py。
-在python环境下，eager模式下的tensor即为EagerTensor类型。
-ops.py文件中定义了\_EagerTensorBase类，
-而后调用C++代码在\_EagerTensorBase类基础上创建了EagerTensor类(
-即EagerTensor类并不是由python代码直接定义出来的)。
-当前版本，\_EagerTensorBase类继承了Tensor类。
-需要进一步弄清楚该类如何与C++中的Tensor类对应。
-
-- convert\_to\_tensor\_v2: 位于ops.py。该函数即tf.convert\_to\_tensor。
-该函数调用ops.convert\_to\_tensor。
-
-- convert\_to\_tensor: 位于ops.py。
-如果传入的值的类型是ops.EagerTensor并且运行在非eager模式下(正在创建function
-的graph)，则调用graph.capture。
-如果传入的值的类型是ops.Tensor，则检查类型并直接返回原值。
-如果传入的值的类型是ops.EagerTensor(注意当前版本的EagerTensor继承了Tensor
-)并且运行在eager模式下，则检查类型并直接返回原值。
-其他情况另有处理方法(会根据需要调用constant\_op.constant)。
-
-- constant\_op.py:constant: 函数，该函数即tf.constant。
-该函数和ops.convert\_to\_tensor没有事实上的区别。
-在eager模式下，会创建一个EagerTensor。
-在非eager模式下，该函数在图中添加Const op。
 
 - FuncGraph: 位于func\_graph.py。继承ops.Graph。
 该类是"Graph representing a function body"。
