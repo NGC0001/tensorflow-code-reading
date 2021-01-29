@@ -1,11 +1,16 @@
-## tensorflow/core/framework目录中对op/kernel相关接口的定义。
+## tensorflow中的算子
+
 - https://zhuanlan.zhihu.com/p/34168765
+
 - 算子在tensorflow中包含两部分，
 面向图的接口定义Op，和执行计算过程的具体实现OpKernel。
 
----
+## tensorflow/core/framework目录中对op/kernel相关接口的定义。
 
-- AttrValue: 位于attr\_value.proto。用于保存Op的attr的值。
+- AttrValue: 位于attr\_value.proto。
+用于保存OpDef、NodeDef等等的attr的值。
+
+---
 
 - OpDef: 位于op\_def.proto。
 记录一个op的name/input/output/attr/optimizationConstraints等。

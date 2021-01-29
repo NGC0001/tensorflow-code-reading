@@ -13,32 +13,27 @@ Release TensorFlow 2.4.0 即将发布。
 
 ## To Do List:
 
-- [ ] what the op/node/graph/function attrs are.
-- [ ] kernel/op/graph/node/function. how a graph built/placed/runned.
+- [ ] when node attrs are actually turned into computational values.
+- [ ] Executor/graph-algorithm/stream-executor/graph-runner
 - [ ] the interface between python and c++ in tensorflow. (and raw\_ops)
 - [ ] python arg-captured function
 - [ ] Graph rewriting in dataset optimization (optimize\_dataset\_op).
-- [ ] ProcessFunctionLibraryRuntime::SendTensor/RescTensor
-- [ ] StridedSlice: does this kernel allocate new memory?
+- [ ] ProcessFunctionLibraryRuntime::SendTensor/RescTensor. Will it merge multiple tensors?
 
 - [ ] variables & optimizers
 - [ ] device manager
 - [ ] thread pool
 - [ ] eager mode
 - [ ] Nccl/Collective
-- [ ] Tensor vs EagerTensor:
+- [ ] C++ TensorHandle vs python EagerTensor.
 What hapens when a Tensor returned from a function
 is converted into EagerTensor in eager mode.
 - [ ] async op
-- [ ] Executor/graph-algorithm/stream-executor/graph-runner
-- [ ] function retracing
 - [ ] AutoDiff and GradientTape (in graph and eager)
 - [ ] AutoGraph
-- [ ] GraphOptimizer
-- [ ] grappler
+- [ ] GraphOptimizer/grappler/xla/jit/compiler
 - [ ] cancellation manager
 - [ ] rendezvous
-- [ ] xla/jit/compiler
 
 ## Notes:
 

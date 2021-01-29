@@ -18,6 +18,9 @@ attributes specific、arguments、NodeDef列表、outputs等。
 根据一个FunctionDef中的NodeDef列表，新建一个NodeDef列表。
 并在新列表中设置各个node的attr values。
 新建的列表储存于一个InstantiationResult对象中。
+InstantiateFunction函数的工作过程借助了FunctionInstantiationHelper类(
+位于function.cc)，正是FunctionInstantiationHelper类
+在function def的node def列表中放入了\_Arg/\_Retval等node def。
 
 - InstantiationResult: 位于function.h。
 含有NodeDef表/arg types/return types。
@@ -72,7 +75,7 @@ FunctionLibraryDefinition/GraphOptimizer等等。
 并利用优化后的图创建item中的Executor。
 有函数GetOrCreateItem，该函数根据local handle查找function item，
 如果item中尚未创建executor，则调用CreateItem创建executor。
-有函数Instatiate，该函数根据function name/attr等来实例化一个function item，
+有函数Instantiate，该函数根据function name/attr等来实例化一个function item，
 该函数调用FunctionDefToBody创建item中的FunctionBody，
 并根据需要调用GetOrCreateItem来创建item中的executor。
 有函数Run/RunSync，该函数根据handle找到function item，调用item中的executor。
@@ -176,8 +179,10 @@ inputs(ops.Tensor对象列表)/output types等等。
 该类记录一个function的inputs/outputs/
 variables/trainable\_variables/captures等等。
 该类的对象可以当作一个ops.Graph对象使用，可以放进default graph stack中。
-该类有方法capture，用于捕获一个EagerTensor(会调用constant\_op.constant)，
-或者为graph外的某个value创立一个placeholder(
+该类有方法capture，用于捕获一个EagerTensor(FuncGraph.capture通过
+调用constant\_op.constant处理EagerTensor)(ops.convert\_to\_tensor函数
+在图模式下会用FuncGraph.capture处理EagerTensor)，
+或者用于为graph外的某个value创立一个placeholder(
 调用eager.graph\_only\_ops.graph\_placeholder)并捕获这个placeholder。
 
 - func\_graph\_from\_py\_func: 函数，位于func\_graph.py。
@@ -185,7 +190,7 @@ variables/trainable\_variables/captures等等。
 构建过程中会根据需要调用tensorflow.python.autograph模块。
 该函数会把正在创建中的FuncGraph对象设置为defautl graph，
 处理inputs(通过调用函数\_get\_defun\_inputs进行处理，比如，
-如果一个input是TensorSpec对象/ops.EagerTensor对象，
+如果一个input是TensorSpec/ops.EagerTensor/ops.Tensor对象，
 则调用eager.graph\_only\_ops.graph\_placeholder为它创建placeholder，
 从而转换为ops.Tensor对象)，再以非eager模式执行所传入的python函数。
 

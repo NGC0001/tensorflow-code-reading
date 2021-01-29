@@ -4,8 +4,7 @@
 含有name(在一张图内是唯一的)、op name(以\_开头，internal use)、
 inputs(以字符串形式记录该结点的input来自哪个结点的第几个输出，
 格式为src\_node:src\_output)、
-device(requested device for this node, optional)、
-attr(对应于OpDef中的attr)等。
+device(requested device for this node, optional)、attr等。
 
 - NodeDefBuilder: 位于node\_def\_builder.h。
 根据OpDef建立一个NodeDef，
@@ -47,9 +46,11 @@ assigned device/in edges/out edges等。
 
 - Graph: 位于graph.h。
 可以用OpRegistryInterface或FunctionLibraryDefinition作为构造参数。
-一个图中，有唯一的源结点(source node, node id=0)，
-有唯一的汇结点(sink node, node id=1)，
-这两个结点的op都是NoOp，
+一个图中有唯一的源结点(source node, node id=0)，
+所有那些没有输入边的结点(源结点自身除外)需要连接源结点作为它们的输入边，
+一个图中有唯一的汇结点(sink node, node id=1)，
+所有那些没有输出边的结点(汇结点自身除外)需要连接汇结点作为它们的输出边，
+源结点和汇结点的op都是NoOp，
 一个图刚被构造时，仅仅有这两个结点，仅有一条从source到sink的control edge。
 Graph类含有FunctionLibraryDefinition/nodes/num\_nodes/
 edges/num\_edges/assigned device names等等。
