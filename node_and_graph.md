@@ -95,8 +95,7 @@ placement遵从以下限制条件(来自placer.h中的代码注释)：
 (3)referece/resource edge连接的两个nodes会在同一device上；
 (4)同一个colocation group中的nodes会在同一个device上。
 Placer类有函数Run，用来执行placement，
-该函数主要依靠ColocationGraph类来帮助满足各限制条件，该函数做了一些优化，
-在考虑各种限制/优化之后该函数默认把node放到可行的device列表中的第一个device上。
+该函数主要依靠ColocationGraph类来帮助满足各限制条件，该函数执行了一些优化策略。
 
 - ColocationGraph: 位于colocation\_graph.h。
 用到了[incremental connectivity (disjoint-set forest / union-find algorithm)](
@@ -121,14 +120,17 @@ https://cloud.tencent.com/developer/article/1685158)。
       如果node是generator node(生产数据的node)，则把node放入待定列表；
       如果node是metadata node(不操作数据的node，比如reshape)，且该node可以和
               它的input node共同放置，则把该node放在它的input node的device上；
-      最后的默认行为是把node放在可行的device列表中的第一个device上。
+      最后的默认行为是把node放在按优先级排列的可行device列表中的第一个device上。
     * Placer::Run遍历待定列表中的nodes。
       如果node是generator node，且该node的consumer nodes在同一个device上，
               且该node也能放在这个device上，则把该node放在这个device上；
-      最后的默认行为是把node放在可行的device列表中的第一个device上。
+      最后的默认行为是把node放在按优先级排列的可行device列表中的第一个device上。
 
 - Member: 位于colocation\_graph.h。
 用于在ColocationGraph对象中表示一个node。
+有函数SetParentAndSupportedDevices，
+该函数会调用(tensorflow/core/framework/op\_kernel.h中的
+)SetParentAndSupportedDevices函数(依据注册的kernel为node筛选可行的device)。
 
 - PartitionFunctionGraph: 函数，位于partitioning\_utils.h。
 用于把place过后的图分成不同device上的子图。

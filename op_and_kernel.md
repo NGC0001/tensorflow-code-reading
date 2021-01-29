@@ -100,3 +100,8 @@ session/cancellation manager/input/function library等等。
 找到后，创建OpKernelConstruction对象。
 随后，调用KernelRegistration中的实例化函数，创建OpKernel对象。
 
+---
+
+- SupportedDeviceTypesForNode: 函数，位于op\_kernel.h。
+该函数从一个DeviceType列表中筛选出node支持的DeviceType(
+有为该device/op注册的kernel)，返回依照优先级(kernel的优先级)排列的筛选后的列表。
