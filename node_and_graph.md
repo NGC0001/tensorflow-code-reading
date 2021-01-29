@@ -89,17 +89,14 @@ edges/num\_edges/assigned device names等等。
 - Placer: 位于placer.h。用于把一张图的各个node分配到DeviceSet中的各个device上。
 目前placer是独立于各个图的，但将来tensorflow也许会定义统一的placer接口，
 并让各个图可以拥有各自专属的placer。
-placement遵从以下限制条件：
+placement遵从以下限制条件(来自placer.h中的代码注释)：
 (1)已经assigned的node不再更改device；
 (2)node中的device specification会被满足；
-(3)referece edge连接的两个nodes会在同一device上；
+(3)referece/resource edge连接的两个nodes会在同一device上；
 (4)同一个colocation group中的nodes会在同一个device上。
-同时placement也会考虑一些优化措施。
-有函数Run，用来执行placement，
-该函数主要依靠ColocationGraph类来帮助满足各限制条件，
-但该函数自身也能满足限制条件(1)，
-该函数做了一些小的优化，
-在此基础上默认把node放到可行的device列表中的第一个device上。
+Placer类有函数Run，用来执行placement，
+该函数主要依靠ColocationGraph类来帮助满足各限制条件，该函数做了一些优化，
+在考虑各种限制/优化之后该函数默认把node放到可行的device列表中的第一个device上。
 
 - ColocationGraph: 位于colocation\_graph.h。
 用到了[incremental connectivity (disjoint-set forest / union-find algorithm)](
@@ -111,6 +108,24 @@ http://web.stanford.edu/class/archive/cs/cs166/cs166.1166/lectures/16/Small16.pd
 这个列表随着placement的进行是不断变化的，
 比如当一个colocation group中的某node被放置到device a后，
 则这个colocation group中其他的所有node都只能被放置到device a上。
+
+- Placer和ColocationGraph的工作流程可以参考
+腾讯云blog [TF中Placement的最后一道防线——Placer](
+https://cloud.tencent.com/developer/article/1685158)。
+大致来说分为以下几步：
+    * ColocationGraph初始化，这一步会处理
+      显式指定的assignment、resource/ref edge的colocation、
+      host-only data的限制、显式指定的colocation等。
+    * Placer::Run遍历所有nodes。
+      如果有assigned device，则为node分配这个device；
+      如果node是generator node(生产数据的node)，则把node放入待定列表；
+      如果node是metadata node(不操作数据的node，比如reshape)，且该node可以和
+              它的input node共同放置，则把该node放在它的input node的device上；
+      最后的默认行为是把node放在可行的device列表中的第一个device上。
+    * Placer::Run遍历待定列表中的nodes。
+      如果node是generator node，且该node的consumer nodes在同一个device上，
+              且该node也能放在这个device上，则把该node放在这个device上；
+      最后的默认行为是把node放在可行的device列表中的第一个device上。
 
 - Member: 位于colocation\_graph.h。
 用于在ColocationGraph对象中表示一个node。
