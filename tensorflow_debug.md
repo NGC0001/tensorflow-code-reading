@@ -60,7 +60,9 @@ bazel build --config=cuda --strip=never -c dbg --verbose\_failures --keep\_going
 
 ---
 
-- 切换到tf2.3.0版本源码，重新尝试编译，仍然在import tensorflow时出现同样的未定义符号错误。
+- 切换到tf2.3.0版本源码(
+https://github.com/tensorflow/tensorflow/releases/tag/v2.3.0)，
+重新尝试编译，仍然在import tensorflow时出现同样的未定义符号错误。
 
 - 继续使用2.3.0版本源码，但放弃'-c dgb'编译模式，采用'**-c opt**'，调整编译命令为 
 bazel build --config=cuda -c opt --copt -g --strip=never --keep\_going --verbose\_failures
