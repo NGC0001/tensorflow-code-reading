@@ -81,7 +81,7 @@ TF\_CPP\_MIN\_VLOG\_LEVEL defaults to 0 and as it increases,
 more debugging messages are logged in.
 Consider adding the following lines before importing tensorflow:
 ```
-os.environ['TF\_CPP\_MIN\_LOG\_LEVEL'] = '0'
-os.environ['TF\_CPP\_MIN\_VLOG\_LEVEL'] = '3'
-os.environ['TF\_DUMP\_GRAPH\_PREFIX'] = '/tmp/tf_dump_graph'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0'
+os.environ['TF_CPP_MIN_VLOG_LEVEL'] = '3'
+os.environ['TF_DUMP_GRAPH_PREFIX'] = '/tmp/tf_dump_graph'
 ```
