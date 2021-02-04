@@ -1,14 +1,19 @@
-### tensorflow/core/framework目录中与resource相关的类。
+### tensorflow中的resource。
 
 - tensorflow中，resource可以被认为是不直接参与计算、
 但在计算的各个step之间保存信息(stateful)、占据一定(0或更多)mem的对象。
 比如获取data的iterator就是resource。
-各resource放入resource manager中进行管理。
-ResourceHandle对象是从resource manager中获取resource的句柄，
+
+- 各resource放入resource manager中进行管理。
+每个device上都有各自的resource manager。
+
+- ResourceHandle对象是从resource manager中获取resource的句柄，
 利用一个ResourceHandle对象中储存的信息，
 可以从resource manager中检索到相应的resource。
 而ResourceHandle对象能够被放入Tensor中，
 这也就间接使得resource可以通过Tensor进行传递。
+
+### tensorflow/core/framework目录中与resource相关的类。
 
 - ResourceBase: 位于resource\_mgr.h。是所有resource的基类。
 继承自RefCounted。
