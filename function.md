@@ -79,10 +79,9 @@ FunctionLibraryDefinition/GraphOptimizer等等。
 该函数调用FunctionDefToBody创建item中的FunctionBody，
 并根据需要调用GetOrCreateItem来创建item中的executor。
 有函数Run/RunSync，该函数根据handle找到function item，调用item中的executor。
-有函数CreateKernel，用于根据NodeProperties创建一个kernel，
-该函数可以根据需要选择是否使用CustomKernelCreator，
-可以根据NodeProperties中的op来确定所创建的kernel的类型
-(普通OpKernel，还是执行某个function的CallOp)。
+有函数CreateKernel，用于根据NodeProperties创建一个kernel
+(可能是function graph中op的kernel)，
+该函数可以根据需要选择是否使用CustomKernelCreator。
 两个不同device上的FunctionLibraryRuntimeImpl对象
 可以互相Initiate/Run对方的function，
 但这需要借由ProcessFunctionLibraryRuntime对象来实现，
