@@ -46,8 +46,13 @@
 ---
 
 - OpKernel: 位于op\_kernel.h。
-其构造函数接受一个OpKernelConstruction对象。
-有thread-safe纯虚函数Compute，该函数执行kernel的计算工作，
+其构造函数接受一个OpKernelConstruction对象，
+在OpKernel构造函数执行时(即OpKernel对象实例化期间)，
+可以利用OpKernelConstruction::GetAttr来获得opkernel对应node的各个attr。
+从tensorflow代码来看，在图模式下，
+OpKernel对象是在graph执行时，由executor负责创建的，
+而最终调用的则可能是(op\_kernel.h中的)CreateOpKernel函数。
+OpKernel类有thread-safe纯虚函数Compute，该函数执行kernel的计算工作，
 它仅接受一个OpKernelContext对象作为参数，
 OpKernelContext提供了Compute所需的输入，
 Compute的计算结果也写入OpKernelContext中。
@@ -62,6 +67,8 @@ AsyncOpKernel的Compute函数会调用ComputeAsync，
 含有一个OpKernel对象实例化时所需的信息，
 如device/allocator/function library/resource manager/node properties等。
 有方法allocate\_temp/allocate\_persistent用于OpKernel自身创建临时/持久的tensor。
+有方法GetAttr，该方法通过(node\_def\_util.h文件中的)GetNodeAttr函数
+来获取OpKernel对象所对应的node的attr。
 
 - OpKernelContext: 位于op\_kernel.h。
 是OpKernel执行Compute时的参数，
