@@ -92,7 +92,7 @@ FunctionLibraryDefinition/GraphOptimizer等等。
 function item中含有graph/function body/executor等等，
 其中executor能够执行该function的graph。
 
-CallOp: 位于function.cc。继承AsyncOpKernel。
+- CallOp: 位于function.cc。继承AsyncOpKernel。
 其构造函数接受一个function handle。
 其ComputeAsync函数通过调用FunctionLibraryRuntime::Run来执行一个特定function。
 
