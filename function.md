@@ -47,7 +47,7 @@ InstantiateFunction函数的工作过程借助了FunctionInstantiationHelper类(
 有纯虚函数Instantiate、纯虚函数Run/RunSync、
 纯虚函数CreateKernel、纯虚函数Clone、纯虚函数GetFunctionBody等。
 
-FunctionLibraryRuntime::Handle/LocalHandle: 位于function.h。
+- FunctionLibraryRuntime::Handle/LocalHandle: 位于function.h。
 都是uint64的type alias。
 用于作为从ProcessFunctionLibraryRuntime/FunctionLibraryRuntime中
 查找function的实例的句柄。
