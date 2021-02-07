@@ -129,8 +129,8 @@ https://cloud.tencent.com/developer/article/1685158)。
 - Member: 位于colocation\_graph.h。
 用于在ColocationGraph对象中表示一个node。
 有函数SetParentAndSupportedDevices，
-该函数会调用(tensorflow/core/framework/op\_kernel.h中的
-)SetParentAndSupportedDevices函数(依据注册的kernel为node筛选可行的device)。
+该函数会调用(tensorflow/core/framework/op\_kernel.h中的)
+SupportedDeviceTypesForNode函数为node筛选可行的device。
 
 - PartitionFunctionGraph: 函数，位于partitioning\_utils.h。
 用于把place过后的图分成不同device上的子图。

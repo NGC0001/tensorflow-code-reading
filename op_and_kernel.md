@@ -110,5 +110,6 @@ session/cancellation manager/input/function library等等。
 ---
 
 - SupportedDeviceTypesForNode: 函数，位于op\_kernel.h。
-该函数从一个DeviceType列表中筛选出node支持的DeviceType(
-有为该device/op注册的kernel)，返回依照优先级(kernel的优先级)排列的筛选后的列表。
+该函数从一个DeviceType列表中筛选出指定的node所支持的DeviceType(
+'node支持device'是指有为该node的device/op组合注册的kernel)，
+返回依照优先级(优先级是kernel注册信息中的优先级)排序的筛选后的列表。
