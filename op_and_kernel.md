@@ -5,6 +5,9 @@
 - 算子在tensorflow中包含两部分，
 面向图的接口定义Op，和执行计算过程的具体实现OpKernel。
 
+- 很多op没有注册int32类型在GPU上的kernel，
+int32 tensor的相关计算往往会被放到CPU上。
+
 ## tensorflow/core/framework目录中对op/kernel相关接口的定义。
 
 - AttrValue: 位于attr\_value.proto。
