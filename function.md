@@ -173,6 +173,15 @@ inputs(ops.Tensor对象列表)/output types等等。
 并处理operation的一些与图相关的attr。
 该类有property \_c\_graph。
 
+- ops.Graph类中保存有一个device栈。
+在图模式下，调用tensorflow.python.framework.ops.device\_v2(即tf.device)
+或者tensorflow.python.framework.ops.device时，
+实际上是调用Graph.device来修改Graph对象内部的device栈。
+在图模式下，如果调用Graph.\_create\_op\_internal(即向graph中添加一个op)，
+且它的compute\_device参数为True，
+那么Graph.\_create\_op\_internal会调用Graph.\_apply\_device\_functions，
+以便把device栈中的device设置到op中去。
+
 - FuncGraph: 位于func\_graph.py。继承ops.Graph。
 该类是"Graph representing a function body"。
 该类记录一个function的inputs/outputs/
