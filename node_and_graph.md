@@ -72,6 +72,8 @@ edges/num\_edges/assigned device names等等。
 - Partition: 函数，位于graph\_partition.h。
 用于把图分成不同device上的子图。
 该函数的重要工作之一是添加一些在device之间Send/Receive数据的nodes。
+该函数会考虑node、kernel、data type对input/output做的一些hostmem限定(
+参考函数BuildMemoryDeviceInfo和函数MemoryTypesForNode)。
 
 ### tensorflow/core/common\_runtime目录中node/graph相关的接口。
 
