@@ -13,7 +13,8 @@
 - TFE\_Execute: TFE\_Op.Execute
 
 - c/eager/tfe\_op\_internal.h: DEFINE\_CONVERSION\_FUNCTIONS macro.
-TFE\_Op = ImmediateExecutionOperation
+ImmediateExecutionOperation\* = unwrap(TFE\_Op\*)
+TFE\_Op\* = wrap(ImmediateExecutionOperation\*)
 
 - c/eager/immediate\_execution\_operator.h: ImmediateExecutionOperation
 

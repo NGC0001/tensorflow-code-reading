@@ -75,6 +75,16 @@ edges/num\_edges/assigned device names等等。
 该函数会考虑node、kernel、data type对input/output做的一些hostmem限定(
 参考函数BuildMemoryDeviceInfo和函数MemoryTypesForNode)。
 
+- 可以参考graph\_partition.cc中的各个函数，来了解Graph Partition所遵循的原则。
+从代码来看，跨device的edge(指edge两端的node被放在不同的device上)
+一定会被插入send/recv op，即便edge两端的tensor可能具有相同的mem类型
+(比如src node在cpu，dst node虽在gpu，但该edge对应的input tensor为hostmem)。
+\_HostSend/\_HostRecv这俩op，它们自身可能(随所在子图)被放到非cpu的device上，
+但被它们send/recv的tensor是位于host mem的。
+send/recv op自身并不会在device之间传递数据，
+它们仅仅是调用OpKernelContext中的rendezvous。
+partition过程还可能会插入一些进行类型转换(cast)的node。
+
 ### tensorflow/core/common\_runtime目录中node/graph相关的接口。
 
 - GraphConstructor: 位于graph\_constructor.h。
