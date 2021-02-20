@@ -79,7 +79,7 @@ edges/num\_edges/assigned device names等等。
 从代码来看，跨device的edge(指edge两端的node被放在不同的device上)
 一定会被插入send/recv op，即便edge两端的tensor可能具有相同的mem类型
 (比如src node在cpu，dst node虽在gpu，但该edge对应的input tensor为hostmem)。
-\_HostSend/\_HostRecv这俩op，它们自身可能(随所在子图)被放到非cpu的device上，
+\_HostSend/\_HostRecv这俩op，它们自身可能(随所在子图)被放到非host的device上，
 但被它们send/recv的tensor是位于host mem的。
 send/recv op自身并不会在device之间传递数据，
 它们仅仅是调用OpKernelContext中的rendezvous。

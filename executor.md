@@ -1,4 +1,4 @@
-## graph mode:
+## graph mode execution.
 
 - executors are private to their graphs
 
@@ -6,7 +6,7 @@
 
 - graph view
 
-## eager mode:
+## eager mode execution.
 
 - TFE\_Py\_FastPathExucute:
 位于tensorflow/python/tfe\_wrapper.cc。该函数是pybind11接口。
@@ -46,5 +46,10 @@ TFE\_Op\* wrap(ImmediateExecutionOperation\*)等，
 
 - EagerOperation::Execute:
 位于tensorflow/core/common\_runtime/eager/core.cc（而非eager\_operation.cc）。
-该方法会根据情况调整op的device（eager placement logic），
+该方法会根据情况调整op的device（eager placement logic，包括
+MaybePinToCustomDevice、MaybePinToResourceDevice、MaybePinSmallOpsToCpu等），
 然后调用EagerExecute(位于tensorflow/core/common\_runtime/eager/execute.h)。
+
+- MaybePinToResourceDevice:
+位于tensorflow/core/common\_runtime/eager/placement\_utils.cc。
+将op放置到它的某个resouce input所在的device上。
