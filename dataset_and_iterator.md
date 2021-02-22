@@ -142,6 +142,16 @@ GetNextInternal函数会轮流对这些iterator调用iterator.GetNext，返回�
 当在python中调用iter(dataset)时，会调用dataset.\_apply\_options()。
 而dataset.\_apply\_options()则可能会用到OptimizeDatasetOp。
 
+---
+
+- CapturedFunction/InstantiatedCapturedFunction: 位于captured\_function.h。
+CapturedFunction封装了一个function并捕获了这个function的所有arguments，
+这样这个function就可以独立执行。
+InstantiatedCapturedFunction在CapturedFunction的基础上
+进一步封装了function运行时所需的组件。
+要注意的是，在captured\_function.cc中，使用了
+experimental\_ints\_on\_device特性的function被禁止multi-device execution。
+
 ### tensorflow/core/kernels/data目录中将Iterator作为resouce进行管理。
 
 - IteratorResource: 位于iterator\_ops.h。继承了ResourceBase。
