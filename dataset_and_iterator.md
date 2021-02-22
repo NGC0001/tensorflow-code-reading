@@ -142,16 +142,6 @@ GetNextInternal函数会轮流对这些iterator调用iterator.GetNext，返回�
 当在python中调用iter(dataset)时，会调用dataset.\_apply\_options()。
 而dataset.\_apply\_options()则可能会用到OptimizeDatasetOp。
 
----
-
-- CapturedFunction/InstantiatedCapturedFunction: 位于captured\_function.h。
-CapturedFunction封装了一个function并捕获了这个function的所有arguments，
-这样这个function就可以独立执行。
-InstantiatedCapturedFunction在CapturedFunction的基础上
-进一步封装了function运行时所需的组件。
-要注意的是，在captured\_function.cc中，使用了
-experimental\_ints\_on\_device特性的function被禁止multi-device execution。
-
 ### tensorflow/core/kernels/data目录中将Iterator作为resouce进行管理。
 
 - IteratorResource: 位于iterator\_ops.h。继承了ResourceBase。
@@ -258,6 +248,26 @@ tensorflow/python/data/ops/iterator\_ops.py。
 而这些dataset/iterator相关的C++算子的调用接口则位于
 tensorflow/python/ops/gen\_dataset\_ops.py，
 因此dataset\_ops.py和iterator\_ops.py会大量调用gen\_dataset\_ops.py。
+
+### 一些注意事项。
+
+- GeneratorDataset使用三个captured function(init、next、finalize)。
+如果init function中需要创建variable，
+考虑直接使用tensorflow.python.ops.gen\_resource\_variable\_ops.var\_handle\_op，
+而不要使用tensorflow.Variables，
+因为后者会导致function捕获到DT\_Resource类型的输入(原因暂不清楚)，
+给function graph的placement以及GeneratorDatasetOp的placement等带来影响。
+
+- CapturedFunction/InstantiatedCapturedFunction: 位于captured\_function.h。
+CapturedFunction封装了一个function并捕获了这个function的所有arguments，
+这样这个function就可以独立执行。
+InstantiatedCapturedFunction在CapturedFunction的基础上
+进一步封装了function运行时所需的组件。
+要注意的是，在captured\_function.cc中，
+如果function使用了experimental\_ints\_on\_device特性
+(即FunctionLibraryDefinition::kIntsOnDeviceAttr，
+该特性影响到"int32类型/GPU"的问题)，
+则这个function被禁止multi-device execution。
 
 ### MultiDeviceIterator。
 
