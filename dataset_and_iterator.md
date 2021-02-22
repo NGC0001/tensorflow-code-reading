@@ -249,7 +249,7 @@ tensorflow/python/data/ops/iterator\_ops.py。
 tensorflow/python/ops/gen\_dataset\_ops.py，
 因此dataset\_ops.py和iterator\_ops.py会大量调用gen\_dataset\_ops.py。
 
-### 一些注意事项。
+### 一些注记。
 
 - GeneratorDataset使用三个captured function(init、next、finalize)。
 如果init function中需要创建variable，
