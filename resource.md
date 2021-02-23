@@ -74,9 +74,20 @@ resource并进行创建/查找/删除...。
 - ResourceDeleter: 位于resource\_mgr.h。
 该类含有一个ResourceDeleter::Helper对象。
 ResourceDeleter::Helper对象含有一个ResourceHandle和一个ResourceMgr\*，
-该对象在析构时，会调用ResourceMgr::Delete。
-ResourceDeleter类的对象装入一个Variant类型的Tensor后，
-可以传递给resource deleter op，以便保证anonymous resource的销毁。
+该对象在析构时，会调用ResourceMgr::Delete(并忽略error)。
+ResourceDeleter类的对象能装入一个Variant类型的Tensor。
+ResourceDeleter类的对象能用于保证anonymous resource的销毁。
+
+- Anonymous Resource: 匿名resouce。
+对于创建命名resource的op kernel，kernel不仅把resouce添加到resource manager，
+还会自己保存并Ref一份指针(因而resource至少有2个引用计数)，
+当kernel析构时，会Unref自己保存的指针，并视情况从resource manager中删除resouce。
+而对于创建匿名resource的op kernel，kernel仅仅把resource添加到resource manager，
+自己不会保存resource指针，特别是，当kernel析构时，
+也不会从resource manager中删除resource。
+不过，创建匿名resource的op kernel除了返回resource handle，
+一般还能够返回一个封装了ResourceDeleter对象的Variant tensor，
+这个ResourceDeleter对象能够从resource manager中删除相应resource。
 
 - ResourceOpKernel: 位于resource\_op\_kernel.h。
 模板类，继承了OpKernel。该类保存有一个resource指针。
