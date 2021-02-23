@@ -25,10 +25,10 @@ Container\*\>储存各个Container。
 其中Container也是字典
 std::unordered\_map\<Key, ResourceMgr::ResourceAndName,
 ResourceMgr::KeyHash, ResourceMgr::KeyEqual\>。
-ResourceMgr::ResourceAndName中含有resource name和ResourceBase指针。
+ResourceMgr::ResourceAndName中含有resource name和RefCountPtr\<ResourceBase\>智能指针。
 而Key是std::pair\<unint64, StringPiece\>，
 两个元素分别用于表示resource的type index、resource name。
-可以看出，resource manager使用两级字典来管理resource，
+可以看出，resource manager使用两级字典来管理resource(resource以智能指针的形式存放)，
 即container name-\>resource key-\>resource。
 ResourceMgr类有函数Lookup，该函数根据参数找到指定的resource后，
 会返回resource的指针prsc，并且会调用prsc-\>Ref() (RefCounted::Ref)，
@@ -36,11 +36,12 @@ ResourceMgr类有函数Lookup，该函数根据参数找到指定的resource后�
 因而当Lookup的caller不再使用这个resource的时候，
 应当调用prsc-\>Unref() (RefCounted::Unref)，使得这个resource的引用数减1。
 ResourceMgr类有函数Create，该函数把一个resource的指针存入两级字典内，
-但该函数并不改变这个resource的引用数。
+但该函数并不改变这个resource的引用数(RefCounted对象在创建时已经自带1个引用数)。
 ResourceMgr类有函数LookupOrCreate，
 该函数将resource的引用数加1(不论最终是lookup还是create)。
 ResourceMgr类有函数Delete，该函数把一个resource的指针从两级字典内删除，
-但该函数并不改变这个resource的引用数。
+并通过ResourceMgr::ResourceAndName里RefCountPtr对象的析构
+来把这个resource的引用数减1。
 
 - ScopedStepContainer: 位于resource\_mgr.h。
 含有step id/container/cleanup function。
