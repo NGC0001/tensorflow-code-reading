@@ -82,6 +82,8 @@ FunctionLibraryDefinition/GraphOptimizer等等。
 有函数CreateKernel，用于根据NodeProperties创建一个kernel
 (可能是function graph中op的kernel)，
 该函数可以根据需要选择是否使用CustomKernelCreator。
+有函数Clone，该函数调用ProcessFunctionLibraryRuntime::Clone来完成复制工作(
+因此FunctionLibraryRuntime至少不会是全局共享的)。
 两个不同device上的FunctionLibraryRuntimeImpl对象
 可以互相Initiate/Run对方的function，
 但这需要借由ProcessFunctionLibraryRuntime对象来实现，
@@ -124,7 +126,10 @@ placement(Placer)/optimization/partition(PartitionFunctionGraph)等。
 根据function所分布的device的不同，
 调用一个或多个device上的FunctionLibraryRuntime::Run，
 或者调用DistributedFunctionLibraryRuntime::Run(remote function)。
-有函数Clone/GetFunctionLibraryDefinition/
+有函数Clone，该函数根据情况复制自身所含的FunctionLibraryDefinition
+或者创建一个空的FunctionLibraryDefinition，
+在此基础上再创建一个新的ProcessFunctionLibraryRuntime。
+有函数GetFunctionLibraryDefinition/
 AddHandle/GetHandle/GetHandleOnDevice/RunSync/
 IsMultiDevice/AddMultiDeviceHandle等等。
 
