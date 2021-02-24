@@ -197,78 +197,6 @@ MakeIteratorOp被注册到MakeIterator。
 IteratorGetNextOp被注册到IteratorGetNext。
 ......
 
-### tensorflow中dataset的工作模式。
-
-- tensorflow的C++类中，所有派生自DatasetBase的类只表示某个dataset的类型、
-该dataset的元素(Tensor)的类型、该dataset的元素的形状、该dataset的必要信息等，
-真正能从dataset中"看到"一个个元素的，
-是从该dataset获得、派生自DatasetBaseIterator的iterator。
-iterator会一次次迭代出元素，dataset不参与迭代。
-在元素的各次迭代之间，iterator是有状态的，而dataset可以是无状态的。
-
-- 按照tensorflow的代码风格，
-不同类型的dataset(DatasetBase的派生类)
-由不同类型的datasetOp(DatasetOpKernel的派生类)得到。
-某个datasetOp返回的dataset一般是该datasetOp的嵌套类。
-从不同类型的dataset得到的iterator(DatasetBaseIterator的派生类)也不同。
-某个dataset得到的iterator一般是该dataset的嵌套类。
-
-- DatasetBase和DatasetBaseIterator做了足够的抽象。
-某种类型的dataset可以是从其他dataset构建而来，
-这样就可以建立一条dataset链，下游的dataset有上游dataset的指针，
-下游dataset的iterator也会调用上游dataset的iterator。
-反映在Python代码上，就是input pipeline，比如:
-dataset.interleave(...).map(...).batch(...).prefetch(...)，
-从上游到下游，分别是original dataset、
-interleave dataset(由InterleaveDatasetOp构建而来)、
-map dataset(由MapDatasetOp构建而来)、
-batch dataset(由BatchDatasetOp构建而来)、
-prefetch dataset(由PrefetchDatasetOp构建而来)。
-
-- 在python中构建input pipeline时，对应的C++代码是创建了一条DatasetBase链。
-当python中iter(dataset)时，C++代码主要做了两件事情。
-一是调用XxxIteratorXxx算子(Op)，
-在ResourceMgr中建立IteratorResource并获得它的ResourceHandle，
-这一步是为了把iterator作为resource交由resource manager来管理，
-但此时iterator resource并没有和dataset关联起来。
-二是调用MakeIterator算子(Op，对应的kernel是MakeIterator)，
-该算子的input包含一个ResourceHandle和一个DatasetBase，
-该算子根据ResourceHandle获取IteratorResource，
-并调用IteratorResource::SetIteratorFromDataset，
-这将导致DatasetBase::MakeIterator被调用(
-直接被调用的是dataset链上最下游的DatasetBase)，
-得到的iterator被放入iterator resource中。
-
-- 在python中对iterator进行迭代时，C++代码调用的是IteratorGetNext算子。
-
-- 在tensorflow的python代码中，对dataset和iterator进行抽象的类分别位于
-tensorflow/python/data/ops/dataset\_ops.py和
-tensorflow/python/data/ops/iterator\_ops.py。
-这两个文件中的代码最终会依赖于相应的C++算子来实现其功能，
-而这些dataset/iterator相关的C++算子的调用接口则位于
-tensorflow/python/ops/gen\_dataset\_ops.py，
-因此dataset\_ops.py和iterator\_ops.py会大量调用gen\_dataset\_ops.py。
-
-### 一些注记。
-
-- GeneratorDataset使用三个captured function(init、next、finalize)。
-如果init function中需要创建variable，
-考虑直接使用tensorflow.python.ops.gen\_resource\_variable\_ops.var\_handle\_op，
-而不要使用tensorflow.Variables，
-因为后者会导致function捕获到DT\_Resource类型的输入(原因暂不清楚)，
-给function graph的placement以及GeneratorDatasetOp的placement等带来影响。
-
-- CapturedFunction/InstantiatedCapturedFunction: 位于captured\_function.h。
-CapturedFunction封装了一个function并捕获了这个function的所有arguments，
-这样这个function就可以独立执行。
-InstantiatedCapturedFunction在CapturedFunction的基础上
-进一步封装了function运行时所需的组件。
-要注意的是，在captured\_function.cc中，
-如果function使用了experimental\_ints\_on\_device特性
-(即FunctionLibraryDefinition::kIntsOnDeviceAttr，
-该特性影响到"int32类型/GPU"的问题)，
-则这个function被禁止multi-device execution。
-
 ### MultiDeviceIterator。
 
 - tensorflow/core/kernels/data/multi\_device\_iterator\_ops.cc。
@@ -305,3 +233,102 @@ DeleteMultiDeviceIteratorOp ...:
 用于为一些tensorflow.distribute.Strategy提供数据输入
 (比如MirroredStrategy，先用multi device iterator在各device上生成各自的一份数据，
 然后把数据封装为per replica value)。
+
+### tensorflow中dataset的工作模式。
+
+- tensorflow的C++类中，所有派生自DatasetBase的类只表示某个dataset的类型、
+该dataset的元素(Tensor)的类型、该dataset的元素的形状、该dataset的必要信息等，
+真正能从dataset中"看到"一个个元素的，
+是从该dataset获得、派生自DatasetBaseIterator的iterator。
+iterator会一次次迭代出元素，dataset不参与迭代。
+在元素的各次迭代之间，iterator是有状态的，而dataset可以是无状态的。
+
+- 按照tensorflow的代码风格，
+不同类型的dataset(DatasetBase的派生类)
+由不同类型的datasetOp(DatasetOpKernel的派生类)得到。
+某个datasetOp返回的dataset一般是该datasetOp的嵌套类。
+从不同类型的dataset得到的iterator(DatasetBaseIterator的派生类)也不同。
+某个dataset得到的iterator一般是该dataset的嵌套类。
+
+- DatasetBase和DatasetBaseIterator做了足够的抽象。
+某种类型的dataset可以是从其他dataset构建而来，
+这样就可以建立一条dataset链，下游的dataset有上游dataset的指针，
+下游dataset的iterator也会调用上游dataset的iterator。
+反映在Python代码上，就是input pipeline，比如:
+dataset.interleave(...).map(...).batch(...).prefetch(...)，
+从上游到下游，分别是original dataset、
+interleave dataset(由InterleaveDatasetOp构建而来)、
+map dataset(由MapDatasetOp构建而来)、
+batch dataset(由BatchDatasetOp构建而来)、
+prefetch dataset(由PrefetchDatasetOp构建而来)。
+
+- 在python中构建input pipeline时，对应的C++代码是创建了一条DatasetBase链。
+当python中iter(dataset)时，C++代码主要做了两件事情。
+一是调用XxxIteratorXxx算子(Op，如Iterator/AnonymousIteratorV2)，
+在ResourceMgr中建立IteratorResource并获得它的ResourceHandle，
+这一步是为了把iterator作为resource交由resource manager来管理，
+但此时iterator resource并没有和dataset关联起来。
+二是调用MakeIterator算子(Op，对应的kernel是MakeIterator)，
+该算子的input包含一个ResourceHandle和一个DatasetBase，
+该算子根据ResourceHandle获取IteratorResource，
+并调用IteratorResource::SetIteratorFromDataset，
+这将导致DatasetBase::MakeIterator被调用(
+直接被调用的是dataset链上最下游的DatasetBase)，
+得到的iterator被放入iterator resource中。
+
+- IteratorHandleOp在compute时，
+会从它的OpKernelContext中获取function library runtime(flr)相关的信息，
+并存入IteratorResouce中。
+MakerIteratorOp在compute时，
+把它的OpKernelContext传递给IteratorResouce::SetIteratorFromDataset。
+IteratorResouce::SetIteratorFromDataset利用接受的OpKernelContext
+以及IteratorResouce中储存的flr，构建出IteratorContext，
+并把IteratorContext传递给DatasetBase::MakeIterator。
+DatasetBase::MakeIterator把接受的IteratorContext传递给
+IteratorBase::InitializeBase和IteratorBase::Initialize。
+IteratorBase::InitializeBase使用接受的IteratorContext做一些'model'相关工作。
+IteratorBase::Initialize一般使用接受的IteratorContext创建上游dataset的IteratorBase
+(其他情况下，IteratorContext在IteratorBase::Initialize中一般没有用处)。
+IteratorGetNextOp在compute时，
+把它的OpKernelContext传递给IteratorResource::GetNext，
+并以std::vector\<Tensor\>的形式获取IteratorResource::GetNext的结果(
+调用链中，自IteratorResource::GetNext以下，
+各函数均以std::vector\<Tensor\>形式传递结果)，
+随后在OpKernelContext中把所获取的结果set\_output。
+IteratorResource::GetNext利用接受的OpKernelContext
+以及IteratorResouce中储存的flr，构建出IteratorContext，
+并把IteratorContext传递给DatasetBaseIterator::GetNext。
+DatasetBaseIterator::GetNext把接受的IteratorContext
+传递给DatasetBaseIterator::GetNextInternal。
+DatasetBaseIterator::GetNextInternal一般把接受的IteratorContext传递给上游IteratorBase，
+或者利用接受的IteratorContext做一些allocation/runner等相关的工作。
+
+- 在python中对iterator进行迭代时，C++代码调用的是IteratorGetNext算子。
+
+- 在tensorflow的python代码中，对dataset和iterator进行抽象的类分别位于
+tensorflow/python/data/ops/dataset\_ops.py和
+tensorflow/python/data/ops/iterator\_ops.py。
+这两个文件中的代码最终会依赖于相应的C++算子来实现其功能，
+而这些dataset/iterator相关的C++算子的调用接口则位于
+tensorflow/python/ops/gen\_dataset\_ops.py，
+因此dataset\_ops.py和iterator\_ops.py会大量调用gen\_dataset\_ops.py。
+
+### 一些注记。
+
+- GeneratorDataset使用三个captured function(init、next、finalize)。
+如果init function中需要创建variable，
+考虑直接使用tensorflow.python.ops.gen\_resource\_variable\_ops.var\_handle\_op，
+而不要使用tensorflow.Variables，
+因为后者会导致function捕获到DT\_Resource类型的输入(原因暂不清楚)，
+给function graph的placement以及GeneratorDatasetOp的placement等带来影响。
+
+- CapturedFunction/InstantiatedCapturedFunction: 位于captured\_function.h。
+CapturedFunction封装了一个function并捕获了这个function的所有arguments，
+这样这个function就可以独立执行。
+InstantiatedCapturedFunction在CapturedFunction的基础上
+进一步封装了function运行时所需的组件。
+要注意的是，在captured\_function.cc中，
+如果function使用了experimental\_ints\_on\_device特性
+(即FunctionLibraryDefinition::kIntsOnDeviceAttr，
+该特性影响到"int32类型/GPU"的问题)，
+则这个function被禁止multi-device execution。
