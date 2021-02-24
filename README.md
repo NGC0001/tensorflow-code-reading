@@ -13,14 +13,15 @@ Release TensorFlow 2.4.0 即将发布。
 
 ## To Do List:
 
-- [ ] when node attrs are actually turned into computational values.
 - [ ] Executor/graph-algorithm/stream-executor/graph-runner
-- [ ] the interface between python and c++ in tensorflow. (and raw\_ops)
+- [ ] How pybind11 works.
 - [ ] python arg-captured function
 - [ ] Graph rewriting in dataset optimization (optimize\_dataset\_op).
-- [ ] ProcessFunctionLibraryRuntime::SendTensor/RescTensor. Will it merge multiple tensors?
+- [ ] ProcessFunctionLibraryRuntime::SendTensor/RescTensor.
+Will it merge multiple tensors?
+Does it use rendezvous?
 
-- [ ] variables & optimizers
+- [ ] optimizers
 - [ ] device manager
 - [ ] thread pool
 - [ ] eager mode
