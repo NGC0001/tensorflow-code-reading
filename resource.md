@@ -48,6 +48,11 @@ ResourceMgr类有函数Delete，该函数把一个resource的指针从两级字�
 看起来是用来抽象resource manager中的特定container，
 用于保存per step的resource。
 
+- ContainerInfo: 位于resource\_mgr.h。
+当一个node需要创建和使用resource时，ContainerInfo类帮助node决定
+resource在resource manager中的container/name。
+ContainerInfo还会判断resource是node私有的还是会被share。
+
 - ResourceHandle: 位于resource\_handle.h。
 该类的对象可以放入DT\_RESOURCE类型的Tensor。
 包含有device/container/name/dtypes\_and\_shapes等信息，
