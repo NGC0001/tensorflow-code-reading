@@ -1,9 +1,9 @@
 ### tensorflow/core/framework目录中与variable相关的接口。
 
-- variable本质上是一个放在resource中的tensor。
+- 当前版本的variable本质上是一个放在resource中的tensor。
 
 - 在tensorflow中，variable有两种实现，
-分别是ref版本(ref-style，已弃用)，和resource版本(resource-style)。
+分别是ref版本(ref-style，已弃用)，和resource版本(resource-style，当前版本)。
 它们的主要区别之一在于，前者使用"Ref(dtype)"类型作为resource的句柄，
 后者使用resource handle作为resource的句柄。
 
