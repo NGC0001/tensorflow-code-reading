@@ -3,7 +3,7 @@
 - https://zhuanlan.zhihu.com/p/34168765
 
 - 算子在tensorflow中包含两部分，
-面向图的接口定义Op，和执行计算过程的具体实现OpKernel。
+面向图的接口定义Op/Node，和执行计算过程的具体实现OpKernel。
 
 - 很多op没有注册int32类型在GPU上的kernel，
 int32 tensor的相关计算往往会被放到CPU上。
@@ -12,6 +12,12 @@ int32 tensor的相关计算往往会被放到CPU上。
 
 - AttrValue: 位于attr\_value.proto。
 用于保存OpDef、NodeDef等等的attr的值。
+对于一个算子来说，attr以及input都是kernel计算过程中可以使用的信息，
+attr用于反映相应的op/node的特性，
+attr的值在kernel创建(OpKernel构造)时即可以获取，
+attr支持的数据类型有多种，
+input必须在OpKernel::Compute中获取，
+input必须是Tensor的形式，而Tensor是在各个op之间传递数据的载体。
 
 ---
 
