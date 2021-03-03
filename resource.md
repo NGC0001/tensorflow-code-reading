@@ -81,7 +81,17 @@ resource并进行创建/查找/删除...。
 ResourceDeleter::Helper对象含有一个ResourceHandle和一个ResourceMgr\*，
 该对象在析构时，会调用ResourceMgr::Delete(并忽略error)。
 ResourceDeleter类的对象能装入一个Variant类型的Tensor。
-ResourceDeleter类的对象能用于保证anonymous resource的销毁。
+ResourceDeleter类的对象能用于保证anonymous resource的销毁(是一种冗余保证措施)，
+一般来说，anonymous resource由专门的destruction op负责销毁，
+而这个op会接受一个封装了resource deleter的variant tensor作为input之一，
+resource销毁的具体情况分为两种：情况1，如果destruction op能够正常运行，
+那么op运行前，作为input的variant tensor尚未被销毁，tensor中的deleter尚未执行，
+因此resource仍存在于resource manager中，而随着op的执行，resource被删除销毁，
+当作为op input的variant tensor随后被销毁时，resource deleter被执行，
+此时resource已经不存在，但deleter会忽略这个not found错误；
+情况2，如果destruction op由于某种错误未能执行，
+那么作为op input的variant tensor会被销毁，
+tensor中的resource deleter被执行，从而resource被删除销毁。
 
 - Anonymous Resource: 匿名resouce。
 对于创建命名resource的op kernel，kernel不仅把resouce添加到resource manager，
