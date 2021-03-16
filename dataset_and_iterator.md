@@ -322,7 +322,8 @@ tensorflow/python/ops/gen\_dataset\_ops.py，
 因为后者会导致function捕获到DT\_Resource类型的输入(原因暂不清楚)，
 给function graph的placement以及GeneratorDatasetOp的placement等带来影响。
 
-- CapturedFunction/InstantiatedCapturedFunction: 位于captured\_function.h。
+- CapturedFunction/InstantiatedCapturedFunction:
+位于tensorflow/core/kernels/data/captured\_function.h。
 CapturedFunction封装了一个function并捕获了这个function的所有arguments，
 这样这个function就可以独立执行。
 InstantiatedCapturedFunction在CapturedFunction的基础上
