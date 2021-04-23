@@ -88,3 +88,10 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0'
 os.environ['TF_CPP_MIN_VLOG_LEVEL'] = '3'
 os.environ['TF_DUMP_GRAPH_PREFIX'] = '/tmp/tf_dump_graph'
 ```
+
+## tensorflow二次开发的问题记录
+
+### 一些宏定义需要保持一致。
+
+- NDEBUG : 会影响DCHECK等宏，进而影响RefCounted类等。
+- EIGEN\_MAX\_ALIGN\_BYTES : 会影响tensor的alignment、allocation等。
